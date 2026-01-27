@@ -23,6 +23,9 @@ public class ChessMovesCalculator {
             return RookMoves.calculate(board,position,piece);
         }
 
+        if (piece.getPieceType() == ChessPiece.PieceType.QUEEN) {
+            return QueenMoves.calculate(board,position,piece);
+        }
         //other pieces here
         return moves;
     }
