@@ -26,7 +26,7 @@ public class KnightMoves {
         return moves;
     }
 
-    //unique moves for the King position
+    //unique moves for the Knight position
     private static void LMove(
             ChessBoard board,
             ChessPosition start,

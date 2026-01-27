@@ -34,13 +34,16 @@ public class ChessMovesCalculator {
             return KingMoves.calculate(board,position,piece);
         }
 
+        //Knight moves check
         if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
             return KnightMoves.calculate(board,position,piece);
         }
 
+        //Pawn moves check
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            return PawnMoves.calculate(board,position,piece);
+        }
 
-
-        //other pieces here
         return moves;
     }
 }
