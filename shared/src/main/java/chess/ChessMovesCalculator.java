@@ -19,8 +19,11 @@ public class ChessMovesCalculator {
             return BishopMoves.calculate(board,position,piece);
         }
 
-        //other pieces here
+        if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
+            return RookMoves.calculate(board,position,piece);
+        }
 
+        //other pieces here
         return moves;
     }
 }
