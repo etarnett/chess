@@ -3,7 +3,7 @@ package chess;
 import java.util.*;
 
 
-//class for calculating Rook's moves
+//class for calculating Queen's moves
 public class QueenMoves {
     public static Collection<ChessMove> calculate(
             ChessBoard board,
