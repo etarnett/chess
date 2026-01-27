@@ -34,6 +34,11 @@ public class ChessMovesCalculator {
             return KingMoves.calculate(board,position,piece);
         }
 
+        if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
+            return KnightMoves.calculate(board,position,piece);
+        }
+
+
 
         //other pieces here
         return moves;
