@@ -13,13 +13,13 @@ public class PawnMoves {
     ) {
         //create a new array to put in the move positions
         Collection<ChessMove> moves = new ArrayList<>();
-
+        //create variables (row, col, depending on color[direction, starting row, and promotion row]
         int row = start.getRow();
         int col = start.getColumn();
-
         int direction;
         int startRow;
         int promotionRow;
+
         //check which color it is and adjust direction, start, and promotion
         if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
             direction = 1;
@@ -33,8 +33,8 @@ public class PawnMoves {
 
         //advance by one
         ChessPosition advance = new ChessPosition(row + direction, col);
-        if (inBounds(row+direction, col) && board.getPiece(advance) == null) {
-            PMove(start, advance, promotionRow, moves);
+        if (MoveHelper.inBounds(row+direction, col) && board.getPiece(advance) == null) {
+            MoveHelper.promotion(start, advance, promotionRow, moves);
 
             //if on startRow move up 2
             if (row == startRow) {
@@ -46,47 +46,24 @@ public class PawnMoves {
         }
 
 
-        //check if captures diagonally
+        //check if captures diagonally left
         int oneRow = row + direction;
-        if (inBounds(oneRow, col - 1)) {
+        if (MoveHelper.inBounds(oneRow, col - 1)) {
             ChessPosition leftAttack = new ChessPosition(oneRow, col - 1);
             ChessPiece target = board.getPiece(leftAttack);
-
             if (target != null && target.getTeamColor() != piece.getTeamColor()) {
-                PMove(start, leftAttack, promotionRow, moves);
+                MoveHelper.promotion(start, leftAttack, promotionRow, moves);
             }
         }
 
-        if (inBounds(oneRow, col + 1)) {
+        //check if captures diagonally right
+        if (MoveHelper.inBounds(oneRow, col + 1)) {
             ChessPosition rightAttack = new ChessPosition(oneRow, col + 1);
             ChessPiece target = board.getPiece(rightAttack);
             if (target != null && target.getTeamColor() != piece.getTeamColor()) {
-                PMove(start, rightAttack, promotionRow, moves);
+                MoveHelper.promotion(start, rightAttack, promotionRow, moves);
             }
         }
-
-
         return moves;
-    }
-
-    private static boolean inBounds(int row, int col) {
-        return row >= 1 && row <= 8 && col >= 1 && col <= 8;
-    }
-
-    //unique moves for the Pawn position
-    private static void PMove(
-            ChessPosition start,
-            ChessPosition end,
-            int promotionRow,
-            Collection<ChessMove> moves
-    ) {
-        if (end.getRow() == promotionRow) {
-            moves.add(new ChessMove(start, end, ChessPiece.PieceType.QUEEN));
-            moves.add(new ChessMove(start, end, ChessPiece.PieceType.ROOK));
-            moves.add(new ChessMove(start, end, ChessPiece.PieceType.BISHOP));
-            moves.add(new ChessMove(start, end, ChessPiece.PieceType.KNIGHT));
-        } else {
-            moves.add(new ChessMove(start,end,null));
-        }
     }
 }

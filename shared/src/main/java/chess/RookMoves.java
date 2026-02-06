@@ -13,10 +13,10 @@ public class RookMoves {
         Collection<ChessMove> moves = new ArrayList<>();
 
         //call teh move helper function to go in each of the diagonal directions
-        MoveHelper.move(board, start, piece, 1,0,moves);
-        MoveHelper.move(board, start, piece, -1,0,moves);
-        MoveHelper.move(board, start, piece, 0,1,moves);
-        MoveHelper.move(board, start, piece, 0,-1,moves);
+        MoveHelper.slide(board, start, piece, 1,0,moves);
+        MoveHelper.slide(board, start, piece, -1,0,moves);
+        MoveHelper.slide(board, start, piece, 0,1,moves);
+        MoveHelper.slide(board, start, piece, 0,-1,moves);
 
         return moves;
     }
