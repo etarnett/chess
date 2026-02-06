@@ -1,5 +1,7 @@
 
-package chess;
+package chess.PieceMoves;
+
+import chess.*;
 
 import java.util.*;
 

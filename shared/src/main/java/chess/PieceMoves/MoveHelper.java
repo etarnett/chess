@@ -1,4 +1,6 @@
-package chess;
+package chess.PieceMoves;
+import chess.*;
+
 import java.util.*;
 //Class to iterate through each possible move
 public class MoveHelper {
