@@ -49,22 +49,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessPiece piece = board.getPiece(startPosition);
-
-        //check if space is empty first
-        if (piece == null) {
-            return null;
-        }
-
-        //initialize the two sets of moves and valid moves
-        Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
-        Collection<ChessMove> validMoves = new ArrayList<>();
-
-        for (ChessMove move: moves) {
-            ChessBoard copyBoard = new ChessBoard(board);
-            //use the makeMove function
-            copyBoard.makeMove(move);
-        }
+        throw new RuntimeException("Not implemented");
 
     }
     /**
@@ -102,9 +87,14 @@ public class ChessGame {
         }
 
         //Make the move
-        ChessBoard.makeMove(move);
+        board.movePiece(move);
 
         //Switch turns
+        if (teamTurn == TeamColor.WHITE) {
+            teamTurn = TeamColor.BLACK;
+        } else {
+            teamTurn = TeamColor.WHITE;
+        }
 
     }
 
