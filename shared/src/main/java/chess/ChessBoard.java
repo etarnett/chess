@@ -40,7 +40,20 @@ public class ChessBoard {
 
 
 
+    public void movePiece(ChessMove move) {
+        ChessPiece piece = getPiece(move.getStartPosition());
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+        //clear start square
+        squares[startPosition.getRow()-1][startPosition.getColumn()-1] = null;
 
+        //check for promotion
+        if (move.getPromotionPiece() != null) {
+            piece  = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+        }
+        //place piece in new spot
+        squares[endPosition.getRow()-1][endPosition.getColumn()-1] = piece;
+    }
 
 
     /**
