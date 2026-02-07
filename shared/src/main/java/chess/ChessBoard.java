@@ -38,6 +38,11 @@ public class ChessBoard {
         return squares[position.getRow()-1][position.getColumn()-1];
     }
 
+
+
+
+
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
