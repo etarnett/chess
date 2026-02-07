@@ -49,7 +49,26 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+
+        //check if space is empty first
+        if (piece == null) {
+            return null;
+        }
+
+        //initialize the two sets of moves and valid moves
+        Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> validMoves = new ArrayList<>();
+
+        for (ChessMove move: moves) {
+            ChessBoard copyBoard = new ChessBoard(board);
+            //use the makeMove function
+            copyBoard.movePiece(move);
+            if (!isInCheck(piece.getTeamColor())) {
+                validMoves.add(move);
+            }
+        }
+        return validMoves;
 
     }
     /**
@@ -79,6 +98,7 @@ public class ChessGame {
         for (ChessMove validMove : moves) {
             if (validMove.equals(move)) {
                 found = true;
+                break;
             }
         }
         //If the move is not in valid moves then throw exception
