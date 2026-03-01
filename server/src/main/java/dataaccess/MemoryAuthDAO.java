@@ -5,7 +5,7 @@ import model.GameData;
 import java.util.*;
 
 public class MemoryAuthDAO implements AuthDAO {
-    private final Map<Integer, AuthData> authTokens = new HashMap<>();
+    private final Map<String, AuthData> authTokens = new HashMap<>();
 
     @Override
     public void clear() {
@@ -13,29 +13,17 @@ public class MemoryAuthDAO implements AuthDAO {
     }
 
     @Override
-    public int createGame(GameData game) {
-        int id = nextGameID++;
-        GameData newGame = new GameData(id, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game()
-        );
-        games.put(id, newGame);
-        return id;
+    public void createAuth(AuthData auth) {
+        authTokens.put(auth.authToken(), auth);
     }
 
     @Override
-    public GameData getGame(int gameID) {
-        return games.get(gameID);
+    public AuthData getAuth(String authToken) {
+        return authTokens.get(authToken);
     }
 
     @Override
-    public Collection<GameData> listGames() {
-        return games.values();
-    }
-
-    @Override
-    public void updateGame(GameData game) throws DataAccessException {
-        if (!games.containsKey(game.gameID())) {
-            throw new DataAccessException("Game does not exist");
-        }
-        games.put(game.gameID(), game);
+    public void deleteAuth(String authToken) {
+        authTokens.remove(authToken);
     }
 }
