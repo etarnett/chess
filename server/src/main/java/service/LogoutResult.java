@@ -1,4 +1,4 @@
 package service;
 
-public class LogoutResult {
+public record LogoutResult () {
 }
