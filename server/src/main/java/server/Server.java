@@ -45,11 +45,6 @@ public class Server {
         javalin.get("/game", listGameHandler::listGames);
         javalin.put("/game", joinGameHandler::joinGame);
 
-        javalin.exception(DataAccessException.class, (e, ctx) -> {
-            ctx.status(500);
-            ctx.json(Map.of("message", "Error: " + e.getMessage()));
-        });
-
     }
 
     public int run(int desiredPort) {

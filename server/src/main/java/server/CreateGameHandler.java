@@ -41,6 +41,9 @@ public class CreateGameHandler {
         } catch (DataAccessException e) {
             ctx.status(401);
             ctx.json(new ErrorResponse("Error: " + e.getMessage()));
+        } catch (Exception e) {
+            ctx.status(500);
+            ctx.json(new ErrorResponse("Error: " + e.getMessage()));
         }
     }
 

@@ -36,6 +36,9 @@ public class RegisterHandler {
                 ctx.status(500);
             }
             ctx.json(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            ctx.status(500);
+            ctx.json(new ErrorResponse("Error: " + e.getMessage()));
         }
     }
 
