@@ -28,7 +28,7 @@ public class JoinGameServiceTest {
     public void joinGameSuccess() throws Exception {
         int gameID = 1;
 
-        JoinGameRequest request = new JoinGameRequest("token", gameID, "WHITE");
+        JoinGameRequest request = new JoinGameRequest("token", "WHITE", gameID);
 
         model.JoinGameResult result = service.joinGame(request);
 
@@ -45,7 +45,7 @@ public class JoinGameServiceTest {
 
         gameDAO.updateGame(new GameData(gameID, "otherUser", null, "game", null));
 
-        JoinGameRequest request = new JoinGameRequest("token", gameID, "WHITE");
+        JoinGameRequest request = new JoinGameRequest("token", "WHITE", gameID);
 
         assertThrows(DataAccessException.class, () -> {
             service.joinGame(request);
