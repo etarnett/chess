@@ -17,13 +17,20 @@ public class LoginHandler {
     public void login(Context ctx) {
         try {
             LoginRequest request = ctx.bodyAsClass(LoginRequest.class);
+
+            if (request.username()==null || request.password() == null) {
+                ctx.status(400);
+                ctx.json(new ErrorResponse("Error: bad request"));
+                return;
+            }
+
             LoginResult result = loginService.login(request);
 
             ctx.status(200);
             ctx.json(result);
         } catch (DataAccessException e) {
             ctx.status(401);
-            ctx.json(new ErrorResponse("Error: " + e.getMessage()));
+            ctx.json(new ErrorResponse(e.getMessage()));
         }
     }
 

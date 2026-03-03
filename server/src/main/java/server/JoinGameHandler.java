@@ -17,11 +17,24 @@ public class JoinGameHandler {
         try {
             String authToken = ctx.header("Authorization");
 
-            JoinGameRequest request = ctx.bodyAsClass(JoinGameRequest.class);
-            request = new JoinGameRequest(
+            if (authToken == null) {
+                ctx.status(401);
+                ctx.json(new ErrorResponse("Error: unauthorized"));
+                return;
+            }
+
+            JoinGameRequest body = ctx.bodyAsClass(JoinGameRequest.class);
+
+            if (body.playerColor() == null) {
+                ctx.status(400);
+                ctx.json(new ErrorResponse("Error: bad request"));
+                return;
+            }
+
+            JoinGameRequest request = new JoinGameRequest(
                     authToken,
-                    request.playerColor(),
-                    request.gameID()
+                    body.playerColor(),
+                    body.gameID()
             );
 
             joinGameService.joinGame(request);
@@ -29,8 +42,15 @@ public class JoinGameHandler {
             ctx.status(200);
             ctx.result("{}");
         } catch (DataAccessException e) {
-            ctx.status(400);
-            ctx.json(new ErrorResponse("Error: " + e.getMessage()));
+            if (e.getMessage().contains("already")) {
+                ctx.status(403);
+            } else if (e.getMessage().contains("unauthorized")) {
+                ctx.status(401);
+            } else {
+                ctx.status(400);
+            }
+
+            ctx.json(new ErrorResponse(e.getMessage()));
         }
     }
 

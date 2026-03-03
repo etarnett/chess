@@ -18,8 +18,21 @@ public class CreateGameHandler {
         try {
             String authToken = ctx.header("Authorization");
 
-            CreateGameRequest request = ctx.bodyAsClass(CreateGameRequest.class);
-            request = new CreateGameRequest(authToken, request.gameName());
+            if (authToken == null) {
+                ctx.status(401);
+                ctx.json(new ErrorResponse("Error: unauthorized"));
+                return;
+            }
+
+            CreateGameRequest body = ctx.bodyAsClass(CreateGameRequest.class);
+
+            if (body.gameName() == null) {
+                ctx.status(400);
+                ctx.json(new ErrorResponse("Error: bad request"));
+                return;
+            }
+
+            model.CreateGameRequest request = new CreateGameRequest(authToken, body.gameName());
 
             CreateGameResult result = createGameService.createGame(request);
 

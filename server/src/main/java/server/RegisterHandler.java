@@ -18,13 +18,23 @@ public class RegisterHandler {
     public void register(Context ctx) {
         try {
             RegisterRequest request = gson.fromJson(ctx.body(), RegisterRequest.class);
+
+            if (request.username()==null || request.password() == null || request.email() == null) {
+                ctx.status(400);
+                ctx.json(new ErrorResponse("Error: bad request"));
+                return;
+            }
+
             RegisterResult result = registerService.register(request);
 
             ctx.status(200);
             ctx.json(result);
         } catch (DataAccessException e) {
-            ctx.status(400);
-            ctx.json(new ErrorResponse("Error: " + e.getMessage()));
+            if (e.getMessage().contains("already")) {
+                ctx.status(403);
+            } else {
+                ctx.status(500);
+            }
         }
     }
 
