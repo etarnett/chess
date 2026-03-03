@@ -7,7 +7,7 @@ import java.util.*;
 
 
 //class for calculating Pawn's moves
-public class PawnMoves {
+public class pawnmoves {
     public static Collection<ChessMove> calculate(
             ChessBoard board,
             ChessPosition start,
@@ -35,8 +35,8 @@ public class PawnMoves {
 
         //advance by one
         ChessPosition advance = new ChessPosition(row + direction, col);
-        if (MoveHelper.inBounds(row+direction, col) && board.getPiece(advance) == null) {
-            MoveHelper.promotion(start, advance, promotionRow, moves);
+        if (movehelper.inBounds(row+direction, col) && board.getPiece(advance) == null) {
+            movehelper.promotion(start, advance, promotionRow, moves);
 
             //if on startRow move up 2
             if (row == startRow) {
@@ -50,20 +50,20 @@ public class PawnMoves {
 
         //check if captures diagonally left
         int oneRow = row + direction;
-        if (MoveHelper.inBounds(oneRow, col - 1)) {
+        if (movehelper.inBounds(oneRow, col - 1)) {
             ChessPosition leftAttack = new ChessPosition(oneRow, col - 1);
             ChessPiece target = board.getPiece(leftAttack);
             if (target != null && target.getTeamColor() != piece.getTeamColor()) {
-                MoveHelper.promotion(start, leftAttack, promotionRow, moves);
+                movehelper.promotion(start, leftAttack, promotionRow, moves);
             }
         }
 
         //check if captures diagonally right
-        if (MoveHelper.inBounds(oneRow, col + 1)) {
+        if (movehelper.inBounds(oneRow, col + 1)) {
             ChessPosition rightAttack = new ChessPosition(oneRow, col + 1);
             ChessPiece target = board.getPiece(rightAttack);
             if (target != null && target.getTeamColor() != piece.getTeamColor()) {
-                MoveHelper.promotion(start, rightAttack, promotionRow, moves);
+                movehelper.promotion(start, rightAttack, promotionRow, moves);
             }
         }
         return moves;

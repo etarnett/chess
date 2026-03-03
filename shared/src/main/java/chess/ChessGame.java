@@ -143,7 +143,7 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         //find the king's position by iterating through each square
-        ChessPosition KingPosition = null;
+        ChessPosition kingPosition = null;
 
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
@@ -151,7 +151,7 @@ public class ChessGame {
                 ChessPiece piece = board.getPiece(position);
 
                 if (piece != null && piece.getTeamColor() == teamColor && piece.getPieceType() == ChessPiece.PieceType.KING) {
-                    KingPosition = position;
+                    kingPosition = position;
                 }
             }
         }
@@ -162,13 +162,17 @@ public class ChessGame {
                 ChessPosition position = new ChessPosition(row,col);
                 ChessPiece piece = board.getPiece(position);
 
-                //check if piece is enemy
-                if (piece != null && piece.getTeamColor() != teamColor) {
-                    //iterate through possible moves to see if it attacks king
-                    for (ChessMove move : piece.pieceMoves(board, position)) {
-                        if (move.getEndPosition().equals(KingPosition)) {
-                            return true;
-                        }
+                if (piece == null) {
+                    continue;
+                }
+
+                if (piece.getTeamColor() == teamColor) {
+                    continue;
+                }
+
+                for (ChessMove move : piece.pieceMoves(board, position)) {
+                    if (move.getEndPosition().equals(kingPosition)) {
+                        return true;
                     }
                 }
             }

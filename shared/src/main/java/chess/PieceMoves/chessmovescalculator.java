@@ -3,7 +3,7 @@ import chess.*;
 
 import java.util.*;
 
-public class ChessMovesCalculator {
+public class chessmovescalculator {
     public static Collection<ChessMove> calculateMoves(
             ChessBoard board,
             ChessPosition position
@@ -18,32 +18,32 @@ public class ChessMovesCalculator {
 
         //Bishop moves check
         if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
-            return BishopMoves.calculate(board,position,piece);
+            return bishopmoves.calculate(board,position,piece);
         }
 
         //Rook moves check
         if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
-            return RookMoves.calculate(board,position,piece);
+            return rookmoves.calculate(board,position,piece);
         }
 
         //Queen moves check
         if (piece.getPieceType() == ChessPiece.PieceType.QUEEN) {
-            return QueenMoves.calculate(board,position,piece);
+            return queenmoves.calculate(board,position,piece);
         }
 
         //King moves check
         if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-            return KingMoves.calculate(board,position,piece);
+            return kingmoves.calculate(board,position,piece);
         }
 
         //Knight moves check
         if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
-            return KnightMoves.calculate(board,position,piece);
+            return knightmoves.calculate(board,position,piece);
         }
 
         //Pawn moves check
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            return PawnMoves.calculate(board,position,piece);
+            return pawnmoves.calculate(board,position,piece);
         }
 
         return moves;

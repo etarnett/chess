@@ -5,7 +5,7 @@ import chess.*;
 import java.util.*;
 
 //class for calculating Bishop's moves
-public class BishopMoves {
+public class bishopmoves {
     public static Collection<ChessMove> calculate(
         ChessBoard board,
         ChessPosition start,
@@ -15,10 +15,10 @@ public class BishopMoves {
         Collection<ChessMove> moves = new ArrayList<>();
 
         //call teh slide helper function to go in each of the diagonal directions
-        MoveHelper.slide(board, start, piece, 1,1,moves);
-        MoveHelper.slide(board, start, piece, 1,-1,moves);
-        MoveHelper.slide(board, start, piece, -1,1,moves);
-        MoveHelper.slide(board, start, piece, -1,-1,moves);
+        movehelper.slide(board, start, piece, 1,1,moves);
+        movehelper.slide(board, start, piece, 1,-1,moves);
+        movehelper.slide(board, start, piece, -1,1,moves);
+        movehelper.slide(board, start, piece, -1,-1,moves);
 
         return moves;
     }
