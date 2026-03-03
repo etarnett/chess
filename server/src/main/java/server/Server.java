@@ -19,12 +19,17 @@ public class Server {
 
         // Register your endpoints
         ClearService clearService = new ClearService(userDAO, authDAO, gameDAO);
+        RegisterService registerService = new RegisterService(userDAO, authDAO);
+
 
         //Handlers
         ClearHandler clearHandler = new ClearHandler(clearService);
+        RegisterHandler registerHandler = new RegisterHandler(registerService);
 
         //Endpoints
+        javalin.post("/user", registerHandler::register);
         javalin.delete("/db", clearHandler::clear);
+
 
         javalin.exception(DataAccessException.class, (e, ctx) -> {
             ctx.status(500);
