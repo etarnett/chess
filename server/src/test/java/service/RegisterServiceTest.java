@@ -24,7 +24,7 @@ public class RegisterServiceTest {
     public void registerSuccess() throws Exception {
         RegisterRequest request = new RegisterRequest("user", "pass", "email@test.com");
 
-        RegisterResult result = registerService.register(request);
+        model.RegisterResult result = registerService.register(request);
 
         // Verify correct
         assertNotNull(result);

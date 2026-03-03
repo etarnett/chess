@@ -30,7 +30,7 @@ public class ListGameServiceTest {
     public void listGamesSuccess() throws Exception {
         ListGameRequest request = new ListGameRequest("token");
 
-        ListGameResult result = service.listGames(request);
+        model.ListGameResult result = service.listGames(request);
 
         assertNotNull(result);
         Collection<GameData> games = result.games();

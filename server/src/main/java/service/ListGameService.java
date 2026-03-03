@@ -14,7 +14,7 @@ public class ListGameService {
         this.gameDAO = gameDAO;
     }
 
-    public ListGameResult listGames(ListGameRequest request) throws DataAccessException {
+    public model.ListGameResult listGames(ListGameRequest request) throws DataAccessException {
         if (authDAO.getAuth(request.authToken()) == null) {
             throw new DataAccessException("Error: unauthorized");
         }

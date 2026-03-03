@@ -13,7 +13,7 @@ public class JoinGameService {
         this.gameDAO = gameDAO;
     }
 
-    public JoinGameResult joinGame(JoinGameRequest request) throws DataAccessException {
+    public model.JoinGameResult joinGame(JoinGameRequest request) throws DataAccessException {
         AuthData auth = authDAO.getAuth(request.authToken());
 
         if (auth == null) {

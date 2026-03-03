@@ -13,7 +13,7 @@ public class CreateGameService {
         this.gameDAO = gameDAO;
     }
 
-    public CreateGameResult createGame(CreateGameRequest request) throws DataAccessException {
+    public model.CreateGameResult createGame(CreateGameRequest request) throws DataAccessException {
         if (authDAO.getAuth(request.authToken()) == null) {
             throw new DataAccessException("Error: unauthorized");
         }

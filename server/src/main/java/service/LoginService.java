@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.AuthData;
+import model.LoginRequest;
 import model.UserData;
 
 import java.util.UUID;
@@ -16,7 +17,7 @@ public class LoginService {
     }
 
 
-    public LoginResult login(LoginRequest request) throws DataAccessException {
+    public model.LoginResult login(LoginRequest request) throws DataAccessException {
         UserData user = userDAO.getUser(request.username());
 
         //check password
@@ -29,6 +30,6 @@ public class LoginService {
         AuthData authData = new AuthData(authToken, request.username());
         authDAO.createAuth(authData);
 
-        return new LoginResult(request.username(), authToken);
+        return new model.LoginResult(request.username(), authToken);
     }
 }

@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.AuthData;
+import model.RegisterRequest;
 import model.UserData;
 
 import java.util.UUID;
@@ -15,7 +16,7 @@ public class RegisterService {
         this.authDAO = authDAO;
     }
 
-    public RegisterResult register(RegisterRequest request) throws DataAccessException {
+    public model.RegisterResult register(RegisterRequest request) throws DataAccessException {
         if (userDAO.getUser(request.username()) != null) {
             throw new DataAccessException("Error: already exists");
         }
@@ -33,6 +34,6 @@ public class RegisterService {
         AuthData authData = new AuthData(authToken, request.username());
         authDAO.createAuth(authData);
 
-        return new RegisterResult(request.username(), authToken);
+        return new model.RegisterResult(request.username(), authToken);
     }
 }

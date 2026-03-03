@@ -27,7 +27,7 @@ public class LoginServiceTest {
     public void loginSuccess() throws Exception {
         LoginRequest request = new LoginRequest("user", "pass");
 
-        LoginResult result = loginService.login(request);
+        model.LoginResult result = loginService.login(request);
 
         // Verify result
         assertNotNull(result);

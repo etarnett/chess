@@ -4,8 +4,8 @@ import io.javalin.http.Context;
 import service.RegisterService;
 import dataaccess.DataAccessException;
 import com.google.gson.Gson;
-import service.RegisterRequest;
-import service.RegisterResult;
+import model.RegisterRequest;
+import model.RegisterResult;
 
 public class RegisterHandler {
     private final RegisterService registerService;

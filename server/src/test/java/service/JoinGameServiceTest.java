@@ -30,7 +30,7 @@ public class JoinGameServiceTest {
 
         JoinGameRequest request = new JoinGameRequest("token", gameID, "WHITE");
 
-        JoinGameResult result = service.joinGame(request);
+        model.JoinGameResult result = service.joinGame(request);
 
         assertNotNull(result);
 

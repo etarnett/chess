@@ -25,7 +25,7 @@ public class CreateGameServiceTest {
 
         CreateGameRequest request = new CreateGameRequest("token", "game");
 
-        CreateGameResult result = service.createGame(request);
+        model.CreateGameResult result = service.createGame(request);
 
         assertNotNull(result);
         assertTrue(result.gameID() > 0);
