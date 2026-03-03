@@ -18,7 +18,7 @@ public class RegisterService {
 
     public model.RegisterResult register(RegisterRequest request) throws DataAccessException {
         if (userDAO.getUser(request.username()) != null) {
-            throw new DataAccessException("Error: already exists");
+            throw new DataAccessException("Error: already taken");
         }
 
         UserData user = new UserData(

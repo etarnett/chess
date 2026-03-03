@@ -33,7 +33,7 @@ public class ListGameServiceTest {
         model.ListGameResult result = service.listGames(request);
 
         assertNotNull(result);
-        Collection<GameData> games = result.games();
+        Collection<GameSummary> games = result.games();
         assertEquals(2, games.size());
     }
 

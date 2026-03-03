@@ -21,7 +21,16 @@ public class ListGameService {
 
         Collection<GameData> games = gameDAO.listGames();
 
-        return new ListGameResult(games);
+        Collection<GameSummary> summaries = games.stream()
+                .map(game -> new GameSummary(
+                        game.gameID(),
+                        game.whiteUsername(),
+                        game.blackUsername(),
+                        game.gameName()
+                ))
+                .toList();
+
+        return new ListGameResult(summaries);
     }
 
 
