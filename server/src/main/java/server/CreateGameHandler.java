@@ -3,7 +3,6 @@ package server;
 import io.javalin.http.Context;
 import service.CreateGameService;
 import model.CreateGameRequest;
-import model.CreateGameResult;
 import dataaccess.DataAccessException;
 
 public class CreateGameHandler {

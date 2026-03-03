@@ -3,6 +3,7 @@ package service;
 import chess.ChessGame;
 import dataaccess.*;
 import model.*;
+import server.CreateGameResult;
 
 public class CreateGameService {
     private final AuthDAO authDAO;
@@ -13,7 +14,7 @@ public class CreateGameService {
         this.gameDAO = gameDAO;
     }
 
-    public model.CreateGameResult createGame(CreateGameRequest request) throws DataAccessException {
+    public CreateGameResult createGame(CreateGameRequest request) throws DataAccessException {
         if (authDAO.getAuth(request.authToken()) == null) {
             throw new DataAccessException("Error: unauthorized");
         }

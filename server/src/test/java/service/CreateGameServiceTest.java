@@ -3,6 +3,8 @@ package service;
 import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.*;
+import server.CreateGameResult;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateGameServiceTest {
@@ -25,7 +27,7 @@ public class CreateGameServiceTest {
 
         CreateGameRequest request = new CreateGameRequest("token", "game");
 
-        model.CreateGameResult result = service.createGame(request);
+        CreateGameResult result = service.createGame(request);
 
         assertNotNull(result);
         assertTrue(result.gameID() > 0);
