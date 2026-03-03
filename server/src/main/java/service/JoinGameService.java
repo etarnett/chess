@@ -32,13 +32,23 @@ public class JoinGameService {
             if (game.whiteUsername() != null) {
                 throw new DataAccessException("Error: already taken");
             }
-            game = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
+            game = new GameData(
+                    game.gameID(),
+                    username,
+                    game.blackUsername(),
+                    game.gameName(),
+                    game.game());
         }
         else if (request.playerColor().equals("BLACK")) {
             if (game.blackUsername() != null) {
                 throw new DataAccessException("Error: already taken");
             }
-            game = new GameData(game.gameID(), username, game.whiteUsername(), game.gameName(), game.game());
+            game = new GameData(
+                    game.gameID(),
+                    game.whiteUsername(),
+                    username,
+                    game.gameName(),
+                    game.game());
         }
         else {
             throw new DataAccessException("Error: bad request");
