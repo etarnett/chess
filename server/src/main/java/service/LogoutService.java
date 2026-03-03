@@ -1,7 +1,7 @@
 package service;
 
 import dataaccess.*;
-import model.AuthData;
+import model.*;
 
 public class LogoutService {
     private final AuthDAO authDAO;
