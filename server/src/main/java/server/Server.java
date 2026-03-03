@@ -1,7 +1,7 @@
 package server;
 
 import dataaccess.*;
-import service.ClearService;
+import service.*;
 import io.javalin.*;
 
 import java.util.*;
@@ -17,18 +17,18 @@ public class Server {
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        // Register your endpoints and exception handlers here.
+        // Register your endpoints
         ClearService clearService = new ClearService(userDAO, authDAO, gameDAO);
 
-        javalin.delete("/db", ctx -> {
-            try {
-                clearService.clear();
-                ctx.status(200);
-                ctx.json(Map.of());
-            } catch (Exception e) {
-                ctx.status(500);
-                ctx.json((Map.of("message", "Error: " + e.getMessage())));
-            }
+        //Handlers
+        ClearHandler clearHandler = new ClearHandler(clearService);
+
+        //Endpoints
+        javalin.delete("/db", clearHandler::clear);
+
+        javalin.exception(DataAccessException.class, (e, ctx) -> {
+            ctx.status(500);
+            ctx.json(Map.of("message", "Error: " + e.getMessage()));
         });
 
     }
