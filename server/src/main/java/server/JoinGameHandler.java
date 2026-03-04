@@ -1,5 +1,6 @@
 package server;
 
+import com.google.gson.Gson;
 import io.javalin.http.Context;
 import service.JoinGameService;
 import model.JoinGameRequest;
@@ -8,6 +9,7 @@ import dataaccess.DataAccessException;
 public class JoinGameHandler {
 
     private final JoinGameService joinGameService;
+    private final Gson gson = new Gson();
 
     public JoinGameHandler(JoinGameService joinGameService) {
         this.joinGameService = joinGameService;
@@ -19,15 +21,15 @@ public class JoinGameHandler {
 
             if (authToken == null) {
                 ctx.status(401);
-                ctx.json(new ErrorResponse("Error: unauthorized"));
+                ctx.result(gson.toJson(new ErrorResponse("Error: unauthorized")));
                 return;
             }
 
-            JoinGameRequest body = ctx.bodyAsClass(JoinGameRequest.class);
+            JoinGameRequest body = gson.fromJson(ctx.body(), JoinGameRequest.class);
 
             if (body.playerColor() == null) {
                 ctx.status(400);
-                ctx.json(new ErrorResponse("Error: bad request"));
+                ctx.result(gson.toJson(new ErrorResponse("Error: bad request")));
                 return;
             }
 
@@ -50,10 +52,11 @@ public class JoinGameHandler {
                 ctx.status(400);
             }
 
-            ctx.json(new ErrorResponse(e.getMessage()));
+            ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
+
         } catch (Exception e) {
             ctx.status(500);
-            ctx.json(new ErrorResponse("Error: " + e.getMessage()));
+            ctx.result(gson.toJson(new ErrorResponse("Error: " + e.getMessage())));
         }
     }
 

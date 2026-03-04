@@ -21,24 +21,25 @@ public class RegisterHandler {
 
             if (request.username()==null || request.password() == null || request.email() == null) {
                 ctx.status(400);
-                ctx.json(new ErrorResponse("Error: bad request"));
+                String gsonResult = gson.toJson(new ErrorResponse("Error: bad request"));
+                ctx.result(gsonResult);
                 return;
             }
 
             RegisterResult result = registerService.register(request);
 
             ctx.status(200);
-            ctx.json(result);
+            ctx.result(gson.toJson(result));
         } catch (DataAccessException e) {
             if (e.getMessage().contains("already")) {
                 ctx.status(403);
             } else {
                 ctx.status(500);
             }
-            ctx.json(new ErrorResponse(e.getMessage()));
+            ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
         } catch (Exception e) {
             ctx.status(500);
-            ctx.json(new ErrorResponse("Error: " + e.getMessage()));
+            ctx.result(gson.toJson(new ErrorResponse("Error: " + e.getMessage())));
         }
     }
 

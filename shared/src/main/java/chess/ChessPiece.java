@@ -1,6 +1,6 @@
 package chess;
 
-import chess.PieceMoves.chessmovescalculator;
+import chess.piecemoves.ChessMovesCalculator;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -68,6 +68,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return chessmovescalculator.calculateMoves(board, myPosition);
+        return ChessMovesCalculator.calculateMoves(board, myPosition);
     }
 }

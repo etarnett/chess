@@ -1,9 +1,9 @@
-package chess.PieceMoves;
+package chess.piecemoves;
 import chess.*;
 
 import java.util.*;
 //Class to iterate through each possible move
-public class movehelper {
+public class MoveHelper {
     //function that takes in board, start postition, piece, the direction it moves, and the array
     public static void slide(
             ChessBoard board,
