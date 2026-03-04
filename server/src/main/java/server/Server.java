@@ -1,9 +1,10 @@
 package server;
 
+import com.google.gson.Gson;
 import dataaccess.*;
 import service.*;
-import io.javalin.*;
-
+import io.javalin.Javalin;
+import io.javalin.json.JavalinGson;
 import java.util.*;
 
 public class Server {
@@ -15,7 +16,11 @@ public class Server {
     private final GameDAO gameDAO = new MemoryGameDAO();
 
     public Server() {
-        javalin = Javalin.create(config -> config.staticFiles.add("web"));
+
+        javalin = Javalin.create(config -> {
+            config.staticFiles.add("web");
+            config.jsonMapper(new JavalinGson());
+        });
 
         // Register your endpoints
         ClearService clearService = new ClearService(userDAO, authDAO, gameDAO);
