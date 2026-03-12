@@ -27,7 +27,7 @@ public class JoinGameHandler {
 
             JoinGameRequest body = gson.fromJson(ctx.body(), JoinGameRequest.class);
 
-            if (body.playerColor() == null) {
+            if (body == null || body.playerColor() == null) {
                 ctx.status(400);
                 ctx.result(gson.toJson(new ErrorResponse("Error: bad request")));
                 return;
@@ -44,18 +44,28 @@ public class JoinGameHandler {
             ctx.status(200);
             ctx.result("{}");
         } catch (DataAccessException e) {
-            if (e.getMessage().contains("already")) {
+            String msg = e.getMessage();
+
+            if (msg == null) {
+                msg = "Error: internal server error";
+            }
+
+            // Ensure message contains "Error"
+            if (!msg.toLowerCase().contains("error")) {
+                msg = "Error: " + msg;
+            }
+
+            if (msg.contains("already")) {
                 ctx.status(403);
-            } else if (e.getMessage().contains("unauthorized")) {
+            } else if (msg.contains("unauthorized")) {
                 ctx.status(401);
-            } else if (e.getMessage().contains("bad request")) {
+            } else if (msg.contains("bad request")) {
                 ctx.status(400);
             } else {
                 ctx.status(500);
             }
 
-            ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
-
+            ctx.result(gson.toJson(new ErrorResponse(msg)));
         } catch (Exception e) {
             ctx.status(500);
             ctx.result(gson.toJson(new ErrorResponse("Error: " + e.getMessage())));

@@ -31,12 +31,19 @@ public class LoginHandler {
             ctx.status(200);
             ctx.result(gson.toJson(result));
         } catch (DataAccessException e) {
-            if (e.getMessage().toLowerCase().contains("unauthorized")) {
+            String msg = e.getMessage();
+
+            if (!msg.toLowerCase().contains("error")) {
+                msg = "Error: " + msg;
+            }
+
+            if (msg.toLowerCase().contains("unauthorized")) {
                 ctx.status(401);
             } else {
                 ctx.status(500);
             }
-            ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
+
+            ctx.result(gson.toJson(new ErrorResponse(msg)));
         } catch (Exception e) {
             ctx.status(500);
             ctx.result(gson.toJson(new ErrorResponse("Error: " + e.getMessage())));

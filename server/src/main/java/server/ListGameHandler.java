@@ -33,8 +33,19 @@ public class ListGameHandler {
             ctx.result(gson.toJson(result));
 
         } catch (DataAccessException e) {
-            ctx.status(401);
-            ctx.result(gson.toJson(new ErrorResponse("Error: " + e.getMessage())));
+            String msg = e.getMessage();
+
+            if (!msg.toLowerCase().contains("error")) {
+                msg = "Error: " + msg;
+            }
+
+            if (msg.contains("unauthorized")) {
+                ctx.status(401);
+            } else {
+                ctx.status(500);
+            }
+
+            ctx.result(gson.toJson(new ErrorResponse(msg)));
         } catch (Exception e) {
             ctx.status(500);
             ctx.result(gson.toJson(

@@ -40,7 +40,15 @@ public class CreateGameHandler {
             ctx.status(200);
             ctx.result(gson.toJson(result));
         } catch (DataAccessException e) {
+
             String msg = e.getMessage();
+
+            if (msg == null) {
+                msg = "Error: internal server error";
+            }
+            if (!msg.toLowerCase().contains("error")) {
+                msg = "Error: " + msg;
+            }
 
             if (msg.contains("unauthorized")) {
                 ctx.status(401);
@@ -49,6 +57,7 @@ public class CreateGameHandler {
             } else {
                 ctx.status(500);
             }
+
             ctx.result(gson.toJson(new ErrorResponse(msg)));
 
         } catch (Exception e) {

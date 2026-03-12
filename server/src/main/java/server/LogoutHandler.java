@@ -31,8 +31,23 @@ public class LogoutHandler {
             ctx.status(200);
             ctx.result("{}");
         } catch (DataAccessException e) {
-            ctx.status(401);
-            ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));
+            String msg = e.getMessage();
+
+            if (msg == null) {
+                msg = "Error: internal server error";
+            }
+
+            if (!msg.toLowerCase().contains("error")) {
+                msg = "Error: " + msg;
+            }
+
+            if (msg.contains("unauthorized")) {
+                ctx.status(401);
+            } else {
+                ctx.status(500);
+            }
+
+            ctx.result(gson.toJson(new ErrorResponse(msg)));
         } catch (Exception e) {
             ctx.status(500);
             ctx.result(gson.toJson(new ErrorResponse("Error: " + e.getMessage())));

@@ -31,12 +31,19 @@ public class RegisterHandler {
             ctx.status(200);
             ctx.result(gson.toJson(result));
         } catch (DataAccessException e) {
-            if (e.getMessage().contains("already")) {
+            String msg = e.getMessage();
+
+            if (!msg.toLowerCase().contains("error")) {
+                msg = "Error: " + msg;
+            }
+
+            if (msg.contains("already")) {
                 ctx.status(403);
             } else {
                 ctx.status(500);
             }
-            ctx.result(gson.toJson(new ErrorResponse("Error: " + e.getMessage())));
+
+            ctx.result(gson.toJson(new ErrorResponse(msg)));
         } catch (Exception e) {
             ctx.status(500);
             ctx.result(gson.toJson(new ErrorResponse("Error: " + e.getMessage())));
