@@ -24,7 +24,7 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public void createAuth(AuthData auth) throws DataAccessException {
-        var sql = "INSERT INTO user (authToken, username) VALUES (?, ?)";
+        var sql = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
 
         try (var conn = DatabaseManager.getConnection();
              var ps = conn.prepareStatement(sql)) {
