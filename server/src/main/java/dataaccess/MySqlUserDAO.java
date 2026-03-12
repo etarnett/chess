@@ -3,7 +3,7 @@ package dataaccess;
 import model.UserData;
 
 public class MySqlUserDAO implements UserDAO {
-    public MySqlUserDAO() throw DataAccessException {
+    public MySqlUserDAO() throws DataAccessException {
 
     }
 
@@ -13,7 +13,7 @@ public class MySqlUserDAO implements UserDAO {
     }
 
     @Override
-    public void createUser(UserData user) throws DataAccessException {
+    public void insertUser(UserData user) throws DataAccessException {
 
     }
 

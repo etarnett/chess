@@ -11,11 +11,18 @@ public class Server {
 
     private final Javalin javalin;
 
-    private final UserDAO userDAO = new MemoryUserDAO();
-    private final AuthDAO authDAO = new MemoryAuthDAO();
-    private final GameDAO gameDAO = new MemoryGameDAO();
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
 
-    public Server() {
+    public Server() throws DataAccessException {
+
+        DatabaseManager.createDatabase();
+        DatabaseManager.createTables();
+
+        userDAO = new MySqlUserDAO();
+        authDAO = new MySqlAuthDAO();
+        gameDAO = new MySqlGameDAO();
 
         javalin = Javalin.create(config -> {
             config.staticFiles.add("web");

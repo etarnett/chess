@@ -14,8 +14,8 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
-    public GameData createGame(String gameName) throws DataAccessException {
-        return null;
+    public int createGame(GameData game) throws DataAccessException {
+        return 0;
     }
 
     @Override
