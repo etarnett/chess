@@ -2,7 +2,6 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import model.AuthData;
 import model.GameData;
 
 import java.sql.SQLException;
@@ -31,6 +30,10 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public int createGame(GameData game) throws DataAccessException {
+        if (game == null) {
+            throw new DataAccessException("Game cannot be null");
+        }
+
         String json = gson.toJson(game.game());
 
         var sql = """
@@ -70,7 +73,7 @@ public class MySqlGameDAO implements GameDAO {
                 if (rs.next()) {
                     String white = rs.getString("whiteUsername");
                     String black = rs.getString("blackUsername");
-                    String name = rs.getString("username");
+                    String name = rs.getString("gameName");
 
                     String json = rs.getString("game");
 
@@ -101,7 +104,7 @@ public class MySqlGameDAO implements GameDAO {
 
                 String white = rs.getString("whiteUsername");
                 String black = rs.getString("blackUsername");
-                String name = rs.getString("username");
+                String name = rs.getString("gameName");
 
                 String json = rs.getString("game");
 
