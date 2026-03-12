@@ -35,7 +35,6 @@ public class MySqlUserDAO implements UserDAO {
         } catch (SQLException ex) {
             throw new DataAccessException("Unable to insert user", ex);
         }
-
     }
 
     @Override
