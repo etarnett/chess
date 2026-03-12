@@ -20,7 +20,7 @@ public class ClearHandler {
             context.result("{}");
         } catch (DataAccessException error) {
             context.status(500);
-            context.result(gson.toJson(new ErrorResponse(error.getMessage())));
+            context.result(gson.toJson(new ErrorResponse("Error: " +error.getMessage())));
         }
     }
 

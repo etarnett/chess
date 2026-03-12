@@ -48,8 +48,10 @@ public class JoinGameHandler {
                 ctx.status(403);
             } else if (e.getMessage().contains("unauthorized")) {
                 ctx.status(401);
-            } else {
+            } else if (e.getMessage().contains("bad request")) {
                 ctx.status(400);
+            } else {
+                ctx.status(500);
             }
 
             ctx.result(gson.toJson(new ErrorResponse(e.getMessage())));

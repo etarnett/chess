@@ -15,10 +15,14 @@ public class Server {
     private final AuthDAO authDAO;
     private final GameDAO gameDAO;
 
-    public Server() throws DataAccessException {
+    public Server() {
 
-        DatabaseManager.createDatabase();
-        DatabaseManager.createTables();
+        try {
+            DatabaseManager.createDatabase();
+            DatabaseManager.createTables();
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Database initialization failed", e);
+        }
 
         userDAO = new MySqlUserDAO();
         authDAO = new MySqlAuthDAO();
