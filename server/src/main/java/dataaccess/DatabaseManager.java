@@ -31,14 +31,14 @@ public class DatabaseManager {
 
     public static void createTables() throws DataAccessException {
         var userTable = """
-            CREATE TABLE IF NOT ESISTS user (
+            CREATE TABLE IF NOT EXISTS user (
                 username VARCHAR(255) PRIMARY KEY,
                 password VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL
             )
             """;
         var authTable = """
-            CREATE TABLE IF NOT EXISTS auth )
+            CREATE TABLE IF NOT EXISTS auth (
                 authToken VARCHAR(255) PRIMARY KEY,
                 username VARCHAR(255) NOT NULL
             )
