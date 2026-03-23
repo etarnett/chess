@@ -69,4 +69,76 @@ public class ServerFacadeTests {
         });
     }
 
+    //LOGOUT TESTS
+    @Test
+    void logoutPositive() throws Exception {
+        var authData = facade.register("player4", "password", "p4@email.com");
+        facade.logout(authData.authToken());
+    }
+
+    @Test
+    void logoutFailsInvalidToken() throws Exception {
+        Assertions.assertThrows(Exception.class, () -> {
+            facade.logout("bad-token");
+        });
+    }
+/*
+    //CREATE GAME TESTS
+    @Test
+    void createGameWorks() throws Exception {
+        var authData = facade.register("player5", "password", "p5@email.com");
+
+        facade.createGame(authData.authToken(), "MyGame");
+    }
+
+    @Test
+    void createGameFailsNoAuth() {
+        Assertions.assertThrows(Exception.class, () -> {
+            facade.createGame(null, "Game");
+        });
+    }
+
+    //LIST GAMES TESTS
+    @Test
+    void listGamesWorks() throws Exception {
+        var authData = facade.register("player6", "password", "p6@email.com");
+
+        facade.createGame(authData.authToken(), "Game1");
+
+        var games = facade.listGames(authData.authToken());
+
+        Assertions.assertNotNull(games);
+        Assertions.assertTrue(games.games().size() > 0);
+    }
+
+    @Test
+    void listGamesFailsInvalidAuth() {
+        Assertions.assertThrows(Exception.class, () -> {
+            facade.listGames("bad-token");
+        });
+    }
+
+    //JOIN GAME TESTS
+    @Test
+    void joinGameWorks() throws Exception {
+        var authData = facade.register("player7", "password", "p7@emil.com");
+
+        facade.createGame(authData.authToken(), "Game1");
+        var games = facade.listGames(authData.authToken());
+
+        var gameID = games.games().get(0).gameID();
+
+        facade.joinGame(authData.authToken(), "WHITE", gameID);
+    }
+
+    @Test
+    void joinGameFailsBadGameID() throws Exception {
+        var auth = facade.register("player8", "password", "p8@email.com");
+
+        Assertions.assertThrows(Exception.class, () -> {
+            facade.joinGame(auth.authToken(), "WHITE", 9999);
+        });
+    }
+
+*/
 }
