@@ -55,7 +55,7 @@ public class ServerFacadeTests {
     void loginPositive() throws Exception {
         facade.register("player2", "password", "p2@email.com");
 
-        var authData = facade.login("player1", "password");
+        var authData = facade.login("player2", "password");
         Assertions.assertNotNull(authData);
         Assertions.assertNotNull(authData.authToken());
     }

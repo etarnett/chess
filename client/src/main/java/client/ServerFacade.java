@@ -28,6 +28,11 @@ public class ServerFacade {
         return makeRequest("POST", "/user", request, AuthData.class, null);
     }
 
+    public AuthData login(String username, String password) throws Exception {
+        var request = new LoginRequest(username, password);
+        return makeRequest("POST", "/session", request, AuthData.class, null);
+    }
+
     public void clear() throws Exception {
         makeRequest("DELETE", "/db", null, null, null);
     }
