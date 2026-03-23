@@ -52,6 +52,10 @@ public class ServerFacade {
 
         int status = conn.getResponseCode();
 
+        if (status < 200 || status >= 300) {
+            throw new Exception("Request failed with status: " + status);
+        }
+
         InputStream responseStream = (status >= 200 && status < 300)
                 ? conn.getInputStream()
                 : conn.getErrorStream();

@@ -33,10 +33,40 @@ public class ServerFacadeTests {
         Assertions.assertTrue(true);
     }
 
+    //REGISTER TESTS
     @Test
-    void register() throws Exception {
+    void registerPositive() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
         Assertions.assertNotNull(authData);
         Assertions.assertTrue(authData.authToken().length() > 10);
     }
+
+    @Test
+    void registerFailsDuplicateUser() throws Exception {
+        facade.register("player1", "password", "p1@email.com");
+
+        Assertions.assertThrows(Exception.class, () -> {
+            facade.register("player1", "password", "p1@email.com");
+        });
+    }
+
+    //LOGIN TESTS
+    @Test
+    void loginPositive() throws Exception {
+        facade.register("player2", "password", "p2@email.com");
+
+        var authData = facade.login("player1", "password");
+        Assertions.assertNotNull(authData);
+        Assertions.assertNotNull(authData.authToken());
+    }
+
+    @Test
+    void loginFailsWrongPassword() throws Exception {
+        facade.register("player3", "password", "p3@email.com");
+
+        Assertions.assertThrows(Exception.class, () -> {
+            facade.login("user3", "incorrect");
+        });
+    }
+
 }
