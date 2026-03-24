@@ -82,7 +82,7 @@ public class ServerFacadeTests {
             facade.logout("bad-token");
         });
     }
-/*
+
     //CREATE GAME TESTS
     @Test
     void createGameWorks() throws Exception {
@@ -98,6 +98,7 @@ public class ServerFacadeTests {
         });
     }
 
+
     //LIST GAMES TESTS
     @Test
     void listGamesWorks() throws Exception {
@@ -111,6 +112,7 @@ public class ServerFacadeTests {
         Assertions.assertTrue(games.games().size() > 0);
     }
 
+
     @Test
     void listGamesFailsInvalidAuth() {
         Assertions.assertThrows(Exception.class, () -> {
@@ -118,6 +120,7 @@ public class ServerFacadeTests {
         });
     }
 
+    /*
     //JOIN GAME TESTS
     @Test
     void joinGameWorks() throws Exception {

@@ -33,6 +33,19 @@ public class ServerFacade {
         return makeRequest("POST", "/session", request, AuthData.class, null);
     }
 
+    public void logout(String authToken) throws Exception {
+        makeRequest("DELETE", "/session", null, null, authToken);
+    }
+
+    public void createGame(String authToken, String gameName) throws Exception {
+        var request = new CreateGameRequest(authToken, gameName);
+        makeRequest("POST", "/game", request, null, authToken);
+    }
+
+    public ListGameResult listGames(String authToken) throws Exception {
+        return makeRequest("GET", "/game", null, ListGameResult.class, authToken);
+    }
+
     public void clear() throws Exception {
         makeRequest("DELETE", "/db", null, null, null);
     }
@@ -61,9 +74,7 @@ public class ServerFacade {
             throw new Exception("Request failed with status: " + status);
         }
 
-        InputStream responseStream = (status >= 200 && status < 300)
-                ? conn.getInputStream()
-                : conn.getErrorStream();
+        InputStream responseStream = conn.getInputStream();
 
         InputStreamReader reader = new InputStreamReader(responseStream);
 
