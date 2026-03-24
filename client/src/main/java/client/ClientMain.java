@@ -1,6 +1,9 @@
 package client;
 
 import chess.*;
+import ui.PreloginUI;
+import model.AuthData;
+
 import java.util.*;
 
 public class ClientMain {
@@ -14,39 +17,41 @@ public class ClientMain {
     private final Scanner scanner = new Scanner(System.in);
     private boolean running = true;
 
+    private ServerFacade server;
+    private PreloginUI preloginUI;
+    private AuthData authData = null;
+
     public void run() {
+        server = new ServerFacade(8080);
+        preloginUI = new ui.PreloginUI(server, scanner);
+
         while (running) {
             printPrompt();
             String input = scanner.nextLine();
-            handleCommand(input);
-        }
 
+            if (input.equalsIgnoreCase("quit")) {
+                running = false;
+                continue;
+            }
+
+            if (authData == null) {
+                authData = preloginUI.runCommand(input);
+            } else {
+                System.out.println("Postlogin UI coming next...");
+            }
+        }
         System.out.println("Goodbye!");
     }
 
     private void printPrompt() {
-        System.out.print("> ");
-    }
-
-    private void handleCommand(String input) {
-        String command = input.trim().toLowerCase();
-
-        switch (command) {
-            case "help" -> printHelp();
-            case "quit" -> running = false;
-            default -> System.out.println("Unknown command. Type 'help' for options.");
+        if (authData == null) {
+            System.out.print("[Logged Out] > ");
+        } else {
+            System.out.print("[Logged In] > ");
         }
-
     }
 
-    private void printHelp() {
-        System.out.println("""
-                register <USERNAME> <PASSWORD> <EMAIL> - to create an account
-                login <USERNAME> <PASSWORD> - to play chess
-                quit - playing chess
-                help - with possible commands
-                """);
-    }
+
 
 
 }
