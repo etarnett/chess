@@ -120,7 +120,6 @@ public class ServerFacadeTests {
         });
     }
 
-    /*
     //JOIN GAME TESTS
     @Test
     void joinGameWorks() throws Exception {
@@ -129,7 +128,7 @@ public class ServerFacadeTests {
         facade.createGame(authData.authToken(), "Game1");
         var games = facade.listGames(authData.authToken());
 
-        var gameID = games.games().get(0).gameID();
+        var gameID = games.games().iterator().next().gameID();
 
         facade.joinGame(authData.authToken(), "WHITE", gameID);
     }
@@ -143,5 +142,4 @@ public class ServerFacadeTests {
         });
     }
 
-*/
 }

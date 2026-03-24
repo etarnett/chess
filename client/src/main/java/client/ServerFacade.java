@@ -46,6 +46,11 @@ public class ServerFacade {
         return makeRequest("GET", "/game", null, ListGameResult.class, authToken);
     }
 
+    public void joinGame(String authToken, String playerColor, int gameID) throws Exception {
+        var request = new JoinGameRequest(authToken, playerColor, gameID);
+        makeRequest("PUT", "/game", request, null, authToken);
+    }
+
     public void clear() throws Exception {
         makeRequest("DELETE", "/db", null, null, null);
     }
