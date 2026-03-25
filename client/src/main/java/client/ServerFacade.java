@@ -2,6 +2,8 @@ package client;
 
 import java.io.*;
 import java.net.*;
+
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.*;
 
@@ -53,6 +55,10 @@ public class ServerFacade {
 
     public void clear() throws Exception {
         makeRequest("DELETE", "/db", null, null, null);
+    }
+
+    public ChessGame getGame(String authToken, int gameID) throws Exception {
+        return makeRequest("GET", "/game/" + gameID, null, ChessGame.class, authToken);
     }
 
     private <T> T makeRequest(String method, String path, Object body, Class<T> responseClass, String authToken) throws Exception {

@@ -105,7 +105,8 @@ public class PostloginUI {
         server.joinGame(authToken, color, gameID);
 
         System.out.println("Joined game as " + color);
-        System.out.println("Insert chess board drawing later");
+        ChessGame game = new ChessGame();
+        drawBoard(game.getBoard());
     }
 
     private void observeGame() throws Exception {
@@ -122,7 +123,8 @@ public class PostloginUI {
         server.joinGame(authToken, null, gameID);
 
         System.out.println("Observing game.");
-        System.out.println("Insert chess board drawing later");
+        ChessGame game = new ChessGame();
+        drawBoard(game.getBoard());
     }
 
     private void drawBoard(ChessBoard board) {
