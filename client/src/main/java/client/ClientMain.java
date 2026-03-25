@@ -19,6 +19,7 @@ public class ClientMain {
 
     private ServerFacade server;
     private PreloginUI preloginUI;
+    private ui.PostloginUI postloginUI;
     private AuthData authData = null;
 
     public void run() {
@@ -36,11 +37,18 @@ public class ClientMain {
 
             if (authData == null) {
                 authData = preloginUI.runCommand(input);
+                if (authData != null) {
+                    postloginUI = new ui.PostloginUI(server, scanner, authData.authToken());
+                }
             } else {
-                System.out.println("Postlogin UI coming next...");
+                boolean loggedOut = postloginUI.runCommand(input);
+
+                if (loggedOut) {
+                    authData = null;
+                    postloginUI = null;
+                }
             }
         }
-        System.out.println("Goodbye!");
     }
 
     private void printPrompt() {

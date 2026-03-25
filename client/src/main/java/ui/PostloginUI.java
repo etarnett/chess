@@ -30,9 +30,12 @@ public class PostloginUI {
                     return true;
                 }
                 case "create" -> createGame();
+                /*
                 case "list" -> listGames();
                 case "join" -> joinGame();
                 case "observe" -> observeGame();
+
+                 */
                 default -> System.out.println("Unknown command. Type 'help' for options.");
             }
         } catch (Exception except){
@@ -54,17 +57,12 @@ public class PostloginUI {
                 """);
     }
 
-    private AuthData login() throws Exception {
-        System.out.print("Username: ");
-        String username = scanner.nextLine();
+    private void createGame() throws Exception {
+        System.out.print("Game name: ");
+        String gamename = scanner.nextLine();
 
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
-
-        AuthData auth = server.login(username, password);
-        System.out.println("Logged in as " + auth.username());
-
-        return auth;
+        server.createGame(authToken, gamename);
+        System.out.println("Game creation complete");
     }
 
     private AuthData register() throws Exception {
