@@ -32,11 +32,9 @@ public class PostloginUI {
                 }
                 case "create" -> createGame();
                 case "list" -> listGames();
-                /*
                 case "join" -> joinGame();
                 case "observe" -> observeGame();
 
-                 */
                 default -> System.out.println("Unknown command. Type 'help' for options.");
             }
         } catch (Exception except){
@@ -86,20 +84,41 @@ public class PostloginUI {
         }
     }
 
-    private AuthData register() throws Exception {
-        System.out.print("Username: ");
-        String username = scanner.nextLine();
+    private void joinGame() throws Exception {
+        System.out.print("Game number: ");
+        int choice = Integer.parseInt(scanner.nextLine());
 
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
+        if (!gameMap.containsKey(choice)) {
+            System.out.println("Invalid game number.");
+            return;
+        }
 
-        System.out.print("email: ");
-        String email = scanner.nextLine();
+        System.out.print("Color: (WHITE/BLACK): ");
+        String color = scanner.nextLine().toUpperCase();
 
-        AuthData auth = server.register(username, password, email);
-        System.out.println("Registered and logged in as " + auth.username());
+        int gameID = gameMap.get(choice);
 
-        return auth;
+        server.joinGame(authToken, color, gameID);
+
+        System.out.println("Joined game as " + color);
+        System.out.println("Insert chess board drawing later");
+    }
+
+    private void observeGame() throws Exception {
+        System.out.print("Game number: ");
+        int choice = Integer.parseInt(scanner.nextLine());
+
+        if (!gameMap.containsKey(choice)) {
+            System.out.println("Invalid game number.");
+            return;
+        }
+
+        int gameID = gameMap.get(choice);
+
+        server.joinGame(authToken, null, gameID);
+
+        System.out.println("Observing game.");
+        System.out.println("Insert chess board drawing later");
     }
 
 }
