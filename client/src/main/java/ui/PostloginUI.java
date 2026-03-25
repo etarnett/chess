@@ -15,7 +15,16 @@ public class PostloginUI {
     private final ServerFacade server;
     private final Scanner scanner;
     private final String authToken;
+
     private final Map<Integer, Integer> gameMap = new HashMap<>();
+
+    private static final String RESET = "\u001B[0m";
+
+    private static final String LIGHT_BG = "\u001B[47m"; // light square
+    private static final String DARK_BG = "\u001B[40m";  // dark square
+
+    private static final String WHITE_PIECE = "\u001B[31m"; // red
+    private static final String BLACK_PIECE = "\u001B[34m"; // blue
 
     public PostloginUI(ServerFacade server, Scanner scanner, String authToken) {
         this.server = server;
@@ -149,7 +158,7 @@ public class PostloginUI {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(position);
 
-                System.out.print(getPieceSymbol(piece) + " ");
+                System.out.print(getSquare(piece, row, col));
             }
 
             System.out.println();
@@ -158,14 +167,31 @@ public class PostloginUI {
         System.out.print("  ");
         for (int col = colStart; col != colEnd; col += colStep) {
             char letter = (char) ('a' + col - 1);
-            System.out.print(letter + " ");
+            System.out.print(" " + letter + " ");
         }
         System.out.println();
     }
 
+    private String getSquare(ChessPiece piece, int row, int col) {
+        boolean isLight = (row+col) % 2 == 0;
+
+        String bg = isLight ? LIGHT_BG : DARK_BG;
+        String fg = "";
+
+        if (piece != null) {
+            fg = piece.getTeamColor() == ChessGame.TeamColor.WHITE
+                    ? WHITE_PIECE
+                    : BLACK_PIECE;
+        }
+
+        String symbol = getPieceSymbol(piece);
+
+        return bg + fg + " " + symbol + " " + RESET;
+    }
+
     private String getPieceSymbol(ChessPiece piece) {
         if (piece == null) {
-            return ".";
+            return " ";
         }
 
         switch (piece.getPieceType()) {
@@ -197,5 +223,4 @@ public class PostloginUI {
             System.out.println("Error: " + msg);
         }
     }
-
 }
