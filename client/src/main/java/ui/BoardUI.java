@@ -45,7 +45,7 @@ public class BoardUI {
     }
 
     private static String getSquare(ChessPiece piece, int row, int col) {
-        boolean isLight = (row + col) % 2 == 0;
+        boolean isLight = (row + col) % 2 != 0;
 
         String bg = isLight ? LIGHT_BG : DARK_BG;
         String fg = "";

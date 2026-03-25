@@ -75,9 +75,13 @@ public class PostloginUI {
         for (var game : result.games()) {
             gameMap.put(index, game.gameID());
 
+            String whiteName = game.whiteUsername() == null ? "OPEN" : game.whiteUsername();
+            String blackName = game.blackUsername() == null ? "OPEN" : game.blackUsername();
+
+
             System.out.println(index + ". " + game.gameName() +
-                    " | White: " + game.whiteUsername() +
-                    " | Black: " + game.blackUsername());
+                    " | White: " + whiteName +
+                    " | Black: " + blackName);
             index++;
         }
 
@@ -88,7 +92,14 @@ public class PostloginUI {
 
     private void joinGame() throws Exception {
         System.out.print("Game number: ");
-        int choice = Integer.parseInt(scanner.nextLine());
+        int choice;
+        try {
+            choice = Integer.parseInt(scanner.nextLine());
+
+        } catch (NumberFormatException e) {
+            System.out.println("Must input number");
+            return;
+        }
 
         if (!gameMap.containsKey(choice)) {
             System.out.println("Invalid game number.");
