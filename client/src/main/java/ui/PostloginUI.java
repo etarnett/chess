@@ -42,7 +42,7 @@ public class PostloginUI {
                 default -> System.out.println("Unknown command. Type 'help' for options.");
             }
         } catch (Exception except){
-            System.out.println("Error: " + except.getMessage());
+            handleError(except);
         }
 
         return false;
@@ -176,8 +176,26 @@ public class PostloginUI {
             case KNIGHT: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "N" : "n";
             case PAWN: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "P" : "p";
         }
-
         return "?";
+    }
+
+    private void handleError(Exception e) {
+        String msg = e.getMessage();
+
+        if (msg == null) {
+            System.out.println("Something went wrong");
+            return;
+        }
+
+        if (msg.contains("403")) {
+            System.out.println("This spot is already taken");
+        } else if (msg.contains("404")) {
+            System.out.println("Game not found");
+        } else if (msg.contains("400")) {
+            System.out.println("Invalid input. Try again");
+        } else {
+            System.out.println("Error: " + msg);
+        }
     }
 
 }
