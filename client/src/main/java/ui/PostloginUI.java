@@ -11,6 +11,7 @@ public class PostloginUI {
     private final ServerFacade server;
     private final Scanner scanner;
     private final String authToken;
+    private final Map<Integer, Integer> gameMap = new HashMap<>();
 
     public PostloginUI(ServerFacade server, Scanner scanner, String authToken) {
         this.server = server;
@@ -30,8 +31,8 @@ public class PostloginUI {
                     return true;
                 }
                 case "create" -> createGame();
-                /*
                 case "list" -> listGames();
+                /*
                 case "join" -> joinGame();
                 case "observe" -> observeGame();
 
@@ -63,6 +64,26 @@ public class PostloginUI {
 
         server.createGame(authToken, gamename);
         System.out.println("Game creation complete");
+    }
+
+    private void listGames() throws Exception {
+        var result = server.listGames(authToken);
+
+        gameMap.clear();
+
+        int index = 1;
+        for (var game : result.games()) {
+            gameMap.put(index, game.gameID());
+
+            System.out.println(index + ". " + game.gameName() +
+                    " | White: " + game.whiteUsername() +
+                    " | Black: " + game.blackUsername());
+            index++;
+        }
+
+        if (gameMap.isEmpty()) {
+            System.out.println("No games :(");
+        }
     }
 
     private AuthData register() throws Exception {
