@@ -100,13 +100,18 @@ public class PostloginUI {
         System.out.print("Color: (WHITE/BLACK): ");
         String color = scanner.nextLine().toUpperCase();
 
+        if (!color.equals("WHITE") && !color.equals("BLACK")) {
+            System.out.println("Invalid color. Enter WHITE or BLACK.");
+            return;
+        }
+
         int gameID = gameMap.get(choice);
 
         server.joinGame(authToken, color, gameID);
 
         System.out.println("Joined game as " + color);
         ChessGame game = new ChessGame();
-        drawBoard(game.getBoard());
+        drawBoard(game.getBoard(), color);
     }
 
     private void observeGame() throws Exception {
@@ -124,14 +129,23 @@ public class PostloginUI {
 
         System.out.println("Observing game.");
         ChessGame game = new ChessGame();
-        drawBoard(game.getBoard());
+        drawBoard(game.getBoard(), "WHITE");
     }
 
-    private void drawBoard(ChessBoard board) {
-        for (int row = 8; row >= 1; row--) {
+    private void drawBoard(ChessBoard board, String perspective) {
+        boolean isWhite = perspective == null || perspective.equalsIgnoreCase("WHITE");
+
+        int rowStart = isWhite ? 8 : 1;
+        int rowEnd = isWhite ? 0 : 9;
+        int rowStep = isWhite ? -1 : 1;
+        int colStart = isWhite ? 1 : 8;
+        int colEnd = isWhite ? 9 : 0;
+        int colStep = isWhite ? 1 : -1;
+
+        for (int row = rowStart; row != rowEnd; row+= rowStep) {
             System.out.print(row + " ");
 
-            for (int col = 1; col <= 8; col++) {
+            for (int col = colStart; col != colEnd; col += colStep) {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(position);
 
@@ -140,7 +154,13 @@ public class PostloginUI {
 
             System.out.println();
         }
-        System.out.println("  a b c d e f g h");
+
+        System.out.print("  ");
+        for (int col = colStart; col != colEnd; col += colStep) {
+            char letter = (char) ('a' + col - 1);
+            System.out.print(letter + " ");
+        }
+        System.out.println();
     }
 
     private String getPieceSymbol(ChessPiece piece) {
