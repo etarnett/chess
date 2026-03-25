@@ -25,21 +25,25 @@ public class PreloginUI {
                 }
                 case "login" -> login();
                 case "register" -> register();
-                default -> {
+                case "clear" -> {
+                    server.clear();
+                    System.out.println("Database cleared.");
+                    yield null;
+                } default -> {
                     System.out.println("Unknown command. Type 'help' for options.");
                     yield null;
                 }
             };
         } catch (Exception except) {
-            System.out.println("Error: " + except.getMessage());
+            ErrorHelper.handleError(except);
             return null;
         }
     }
 
     private void printHelp() {
         System.out.println("""
-                register <USERNAME> <PASSWORD> <EMAIL> - to create an account
-                login <USERNAME> <PASSWORD> - to play chess
+                register - to create an account
+                login - to play chess
                 quit - playing chess
                 help - with possible commands
                 """);
@@ -51,6 +55,10 @@ public class PreloginUI {
 
         System.out.print("Password: ");
         String password = scanner.nextLine();
+
+        if (username.isBlank() || password.isBlank()) {
+            System.out.println("Username and password cannot be empty.");
+        }
 
         AuthData auth = server.login(username, password);
         System.out.println("Logged in as " + auth.username());
@@ -67,6 +75,11 @@ public class PreloginUI {
 
         System.out.print("email: ");
         String email = scanner.nextLine();
+
+        if (username.isBlank() || password.isBlank() || email.isBlank()) {
+            System.out.println("Username, password, or email cannot be empty.");
+            return null;
+        }
 
         AuthData auth = server.register(username, password, email);
         System.out.println("Registered and logged in as " + auth.username());

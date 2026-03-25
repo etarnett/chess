@@ -1,9 +1,6 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import client.ServerFacade;
 import model.*;
 
@@ -17,14 +14,6 @@ public class PostloginUI {
     private final String authToken;
 
     private final Map<Integer, Integer> gameMap = new HashMap<>();
-
-    private static final String RESET = "\u001B[0m";
-
-    private static final String LIGHT_BG = "\u001B[47m"; // light square
-    private static final String DARK_BG = "\u001B[40m";  // dark square
-
-    private static final String WHITE_PIECE = "\u001B[31m"; // red
-    private static final String BLACK_PIECE = "\u001B[34m"; // blue
 
     public PostloginUI(ServerFacade server, Scanner scanner, String authToken) {
         this.server = server;
@@ -51,7 +40,7 @@ public class PostloginUI {
                 default -> System.out.println("Unknown command. Type 'help' for options.");
             }
         } catch (Exception except){
-            handleError(except);
+            ErrorHelper.handleError(except);
         }
 
         return false;
@@ -120,7 +109,7 @@ public class PostloginUI {
 
         System.out.println("Joined game as " + color);
         ChessGame game = new ChessGame();
-        drawBoard(game.getBoard(), color);
+        BoardUI.drawBoard(game.getBoard(), color);
     }
 
     private void observeGame() throws Exception {
@@ -132,95 +121,10 @@ public class PostloginUI {
             return;
         }
 
-        int gameID = gameMap.get(choice);
-
-        server.joinGame(authToken, null, gameID);
-
         System.out.println("Observing game.");
+
         ChessGame game = new ChessGame();
-        drawBoard(game.getBoard(), "WHITE");
+        BoardUI.drawBoard(game.getBoard(), "WHITE");
     }
 
-    private void drawBoard(ChessBoard board, String perspective) {
-        boolean isWhite = perspective == null || perspective.equalsIgnoreCase("WHITE");
-
-        int rowStart = isWhite ? 8 : 1;
-        int rowEnd = isWhite ? 0 : 9;
-        int rowStep = isWhite ? -1 : 1;
-        int colStart = isWhite ? 1 : 8;
-        int colEnd = isWhite ? 9 : 0;
-        int colStep = isWhite ? 1 : -1;
-
-        for (int row = rowStart; row != rowEnd; row+= rowStep) {
-            System.out.print(row + " ");
-
-            for (int col = colStart; col != colEnd; col += colStep) {
-                ChessPosition position = new ChessPosition(row, col);
-                ChessPiece piece = board.getPiece(position);
-
-                System.out.print(getSquare(piece, row, col));
-            }
-
-            System.out.println();
-        }
-
-        System.out.print("  ");
-        for (int col = colStart; col != colEnd; col += colStep) {
-            char letter = (char) ('a' + col - 1);
-            System.out.print(" " + letter + " ");
-        }
-        System.out.println();
-    }
-
-    private String getSquare(ChessPiece piece, int row, int col) {
-        boolean isLight = (row+col) % 2 == 0;
-
-        String bg = isLight ? LIGHT_BG : DARK_BG;
-        String fg = "";
-
-        if (piece != null) {
-            fg = piece.getTeamColor() == ChessGame.TeamColor.WHITE
-                    ? WHITE_PIECE
-                    : BLACK_PIECE;
-        }
-
-        String symbol = getPieceSymbol(piece);
-
-        return bg + fg + " " + symbol + " " + RESET;
-    }
-
-    private String getPieceSymbol(ChessPiece piece) {
-        if (piece == null) {
-            return " ";
-        }
-
-        switch (piece.getPieceType()) {
-            case KING: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "K" : "k";
-            case QUEEN: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "Q" : "q";
-            case ROOK: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "R" : "r";
-            case BISHOP: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "B" : "b";
-            case KNIGHT: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "N" : "n";
-            case PAWN: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "P" : "p";
-        }
-        return "?";
-    }
-
-    private void handleError(Exception e) {
-        String msg = e.getMessage();
-
-        if (msg == null) {
-            System.out.println("Something went wrong");
-            return;
-        }
-
-        if (msg.contains("403")) {
-            System.out.println("This spot is already taken");
-        } else if (msg.contains("404")) {
-            System.out.println("Game not found");
-        } else if (msg.contains("400")) {
-            System.out.println("Invalid input. Try again");
-        } else {
-            System.out.println("Error: " + msg);
-        }
-    }
 }
