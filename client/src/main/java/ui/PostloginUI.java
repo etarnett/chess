@@ -1,5 +1,9 @@
 package ui;
 
+import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import client.ServerFacade;
 import model.*;
 
@@ -119,6 +123,39 @@ public class PostloginUI {
 
         System.out.println("Observing game.");
         System.out.println("Insert chess board drawing later");
+    }
+
+    private void drawBoard(ChessBoard board) {
+        for (int row = 8; row >= 1; row--) {
+            System.out.print(row + " ");
+
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                System.out.print(getPieceSymbol(piece) + " ");
+            }
+
+            System.out.println();
+        }
+        System.out.println("  a b c d e f g h");
+    }
+
+    private String getPieceSymbol(ChessPiece piece) {
+        if (piece == null) {
+            return ".";
+        }
+
+        switch (piece.getPieceType()) {
+            case KING: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "K" : "k";
+            case QUEEN: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "Q" : "q";
+            case ROOK: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "R" : "r";
+            case BISHOP: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "B" : "b";
+            case KNIGHT: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "N" : "n";
+            case PAWN: return piece.getTeamColor() == ChessGame.TeamColor.WHITE ? "P" : "p";
+        }
+
+        return "?";
     }
 
 }
