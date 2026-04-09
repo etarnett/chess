@@ -5,6 +5,7 @@ import io.javalin.websocket.*;
 
 import org.eclipse.jetty.websocket.api.Session;
 
+import java.time.Duration;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import model.AuthData;
@@ -33,7 +34,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     @Override
     public void handleConnect(WsConnectContext ctx) {
         System.out.println("WebSocket connected");
-        ctx.enableAutomaticPings();
+        ctx.session.setIdleTimeout(Duration.ofMinutes(30));
+
     }
 
     @Override
