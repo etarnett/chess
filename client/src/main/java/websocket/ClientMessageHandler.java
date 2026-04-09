@@ -8,6 +8,7 @@ import websocket.messages.ServerMessage;
 public class ClientMessageHandler implements ServerMessageHandler {
     private String perspective = "WHITE";
     private final String username;
+    private ChessGame currentGame;
 
     public ClientMessageHandler(String username) {
         this.username = username;
@@ -18,12 +19,12 @@ public class ClientMessageHandler implements ServerMessageHandler {
 
         switch (message.getServerMessageType()) {
             case LOAD_GAME -> {
-                ChessGame game = (ChessGame) message.game;
+                currentGame = (ChessGame) message.game;
 
                 setPerspective(message.game);
 
                 System.out.println("\n --- Game Update ---");
-                BoardUI.drawBoard(game.getBoard(), perspective);
+                BoardUI.drawBoard(currentGame.getBoard(), perspective);
             }
 
             case NOTIFICATION -> {
@@ -34,6 +35,10 @@ public class ClientMessageHandler implements ServerMessageHandler {
                 System.out.println("\n[ERROR] " + message.errorMessage);
             }
         }
+    }
+
+    public ChessGame getGame() {
+        return currentGame;
     }
 
     private void setPerspective(Object gameObj) {

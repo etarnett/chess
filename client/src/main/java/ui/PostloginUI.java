@@ -17,6 +17,7 @@ public class PostloginUI {
     private String currentColor = "WHITE";
     private int currentGameID;
     private String username;
+    private ClientMessageHandler handler;
 
     private final Map<Integer, Integer> gameMap = new HashMap<>();
 
@@ -129,7 +130,7 @@ public class PostloginUI {
         currentGameID = gameID;
         currentColor = color;
 
-        ServerMessageHandler handler = new ClientMessageHandler(username);
+        handler = new ClientMessageHandler(username);
 
         ws = new WebSocketFacade("http://localhost:8080", handler);
         ws.connect(authToken, gameID);
@@ -154,7 +155,7 @@ public class PostloginUI {
         currentGameID = gameID;
         currentColor = "WHITE";
 
-        ServerMessageHandler handler = new ClientMessageHandler(username);
+        handler = new ClientMessageHandler(username);
 
         ws = new WebSocketFacade("http://localhost:8080", handler);
 
@@ -183,7 +184,10 @@ public class PostloginUI {
                     handleMove(input);
                 } else if (input.equalsIgnoreCase("help")) {
                     printGameHelp();
-                } else {
+                } else if (input.startsWith("highlight")) {
+                    highlightMoves(input);
+                }
+                else {
                     System.out.println("Unknown command");
                 }
             } catch (Exception e) {
@@ -211,6 +215,37 @@ public class PostloginUI {
         int col = pos.charAt(0) - 'a' + 1;
         int row = Character.getNumericValue(pos.charAt(1));
         return new ChessPosition(row, col);
+    }
+
+    private void highlightMoves(String input) {
+        try {
+            String[] parts = input.split(" ");
+            if (parts.length < 2) {
+                System.out.println("Usage: highlight <position>");
+                return;
+            }
+
+            ChessPosition position = parsePosition(parts[1]);
+            ChessGame game = getCurrentGame();
+
+            Collection<ChessMove> moves = game.validMoves(position);
+
+            if (moves == null || moves.isEmpty()) {
+                System.out.println("No valid moves.");
+                return;
+            }
+
+            System.out.println("Valid moves");
+            for (ChessMove move : moves) {
+                System.out.println(move);
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid position.");
+        }
+    }
+
+    private ChessGame getCurrentGame() {
+        return handler.getGame();
     }
 
     private void printGameHelp() {
