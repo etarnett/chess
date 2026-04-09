@@ -49,7 +49,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 case CONNECT -> connect(command, session);
                 case LEAVE -> leave(command, session);
                 case MAKE_MOVE -> makeMove(command, session);
-                /*case RESIGN -> resign(command, session);*/
+                case RESIGN -> resign(command, session);
             }
 
         } catch (Exception e) {
@@ -173,6 +173,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 return;
             }
 
+            if (game.isGameOver()) {
+                sendError(session, "error: game is over");
+                return;
+            }
+
             game.makeMove(command.getMove());
 
             GameData updatedGame = new GameData(
@@ -211,6 +216,59 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 connections.broadcastAll(gameID, gson.toJson(checkMsg));
             }
 
+        } catch (Exception e) {
+            sendError(session, "error: " + e.getMessage());
+        }
+    }
+
+    private void resign(UserGameCommand command, Session session) throws IOException {
+        try {
+            AuthData auth = authDAO.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(session, "error: unauthorized");
+                return;
+            }
+
+            String username = auth.username();
+            int gameID = command.getGameID();
+
+            GameData gameData = gameDAO.getGame(gameID);
+            if (gameData == null) {
+                sendError(session, "error: game not found");
+                return;
+            }
+
+            boolean isWhite = username.equals(gameData.whiteUsername());
+            boolean isBlack = username.equals(gameData.blackUsername());
+
+            if (!isWhite && !isBlack) {
+                sendError(session, "error: observer cannot resign");
+                return;
+            }
+
+            var game = gameData.game();
+
+            if (game.isGameOver()) {
+                sendError(session, "error: game already over");
+                return;
+            }
+
+            game.setGameOver(true);
+
+            GameData updatedGame = new GameData(
+                    gameData.gameID(),
+                    gameData.whiteUsername(),
+                    gameData.blackUsername(),
+                    gameData.gameName(),
+                    gameData.game()
+            );
+
+            gameDAO.updateGame(updatedGame);
+
+            ServerMessage notif = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            notif.message = username + " resigned the game";
+
+            connections.broadcastAll(gameID, gson.toJson(notif));
         } catch (Exception e) {
             sendError(session, "error: " + e.getMessage());
         }
