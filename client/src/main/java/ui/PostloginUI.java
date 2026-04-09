@@ -16,7 +16,7 @@ public class PostloginUI {
     private WebSocketFacade ws;
     private String currentColor = "WHITE";
     private int currentGameID;
-    private String username;
+    private final String username;
     private ClientMessageHandler handler;
 
     private final Map<Integer, Integer> gameMap = new HashMap<>();
@@ -67,9 +67,9 @@ public class PostloginUI {
 
     private void createGame() throws Exception {
         System.out.print("Game name: ");
-        String gamename = scanner.nextLine();
+        String gameName = scanner.nextLine();
 
-        server.createGame(authToken, gamename);
+        server.createGame(authToken, gameName);
         System.out.println("Game creation complete");
     }
 
@@ -130,7 +130,7 @@ public class PostloginUI {
         currentGameID = gameID;
         currentColor = color;
 
-        handler = new ClientMessageHandler(username);
+        handler = new ClientMessageHandler(username, currentColor);
 
         ws = new WebSocketFacade("http://localhost:8080", handler);
         ws.connect(authToken, gameID);
@@ -150,12 +150,10 @@ public class PostloginUI {
 
         int gameID = gameMap.get(choice);
 
-
-
         currentGameID = gameID;
         currentColor = "WHITE";
 
-        handler = new ClientMessageHandler(username);
+        handler = new ClientMessageHandler(username, currentColor);
 
         ws = new WebSocketFacade("http://localhost:8080", handler);
 
@@ -255,6 +253,7 @@ public class PostloginUI {
             move <from> <to>  - make a move (e.g. move e2 e4)
             leave             - leave the game
             resign            - resign the game
+            highlight         - highlights possible moves
             help              - show commands
             """);
     }

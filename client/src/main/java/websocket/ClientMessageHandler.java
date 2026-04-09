@@ -11,8 +11,10 @@ public class ClientMessageHandler implements ServerMessageHandler {
     private final String username;
     private ChessGame currentGame;
 
-    public ClientMessageHandler(String username) {
+    public ClientMessageHandler(String username, String color) {
+
         this.username = username;
+        this.perspective = color;
     }
 
     @Override
@@ -24,8 +26,6 @@ public class ClientMessageHandler implements ServerMessageHandler {
                         new Gson().toJson(message.game),
                         ChessGame.class
                 );
-
-                setPerspective(message.game);
 
                 System.out.println("\n --- Game Update ---");
                 BoardUI.drawBoard(currentGame.getBoard(), perspective);
@@ -45,20 +45,4 @@ public class ClientMessageHandler implements ServerMessageHandler {
         return currentGame;
     }
 
-    private void setPerspective(Object gameObj) {
-        try {
-            GameData gameData = (GameData) gameObj;
-
-            if (username.equals(gameData.whiteUsername())) {
-                perspective = "WHITE";
-            } else if (username.equals(gameData.blackUsername())) {
-                perspective = "BLACK";
-            } else {
-                perspective = "WHITE"; // observer default
-            }
-
-        } catch (Exception e) {
-            perspective = "WHITE"; // fallback safety
-        }
-    }
 }
