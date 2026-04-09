@@ -1,9 +1,8 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
+
+import java.util.Collection;
 
 public class BoardUI {
 
@@ -44,6 +43,37 @@ public class BoardUI {
         System.out.println();
     }
 
+    public static void drawBoardWithHighlights(
+            ChessBoard board,
+            String perspective,
+            ChessPosition selected,
+            Collection<ChessMove> moves
+    ) {
+        boolean isWhite = perspective == null || perspective.equalsIgnoreCase("WHITE");
+
+        int rowStart = isWhite ? 8 : 1;
+        int rowEnd = isWhite ? 0 : 9;
+        int rowStep = isWhite ? -1 : 1;
+        int colStart = isWhite ? 1 : 8;
+        int colEnd = isWhite ? 9 : 0;
+        int colStep = isWhite ? 1 : -1;
+
+        for (int row = rowStart; row != rowEnd; row += rowStep) {
+            System.out.print(row + " ");
+
+            for (int col = colStart; col != colEnd; col += colStep) {
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(pos);
+
+                boolean isSelected = pos.equals(selected);
+                boolean isValidMove = moves.stream().anyMatch(m -> m.getEndPosition().equals(pos));
+                System.out.print(getHighlightedSquare(piece, row, col, isSelected, isValidMove));
+            }
+
+            System.out.println();
+        }
+    }
+
     private static String getSquare(ChessPiece piece, int row, int col) {
         boolean isLight = (row + col) % 2 != 0;
 
@@ -59,6 +89,22 @@ public class BoardUI {
         String symbol = getPieceSymbol(piece);
 
         return bg + fg + " " + symbol + " " + RESET;
+    }
+
+    private static String getHighlightedSquare(ChessPiece piece, int row, int col, boolean isSelected, boolean isValidMove) {
+        String bg;
+
+        if (isSelected) {
+            bg = "\u001B[44m"; // blue
+        } else if (isValidMove) {
+            bg = "\u001B[42m"; // green
+        } else {
+            bg = (row + col) % 2 == 0 ? "\u001B[47m" : "\u001B[40m";
+        }
+
+        String pieceStr = piece == null ? "   " : " " + piece.getPieceType().toString().charAt(0) + " ";
+
+        return bg + pieceStr + "\u001b[0m";
     }
 
     private static String getPieceSymbol(ChessPiece piece) {

@@ -230,15 +230,13 @@ public class PostloginUI {
 
             Collection<ChessMove> moves = game.validMoves(position);
 
-            if (moves == null || moves.isEmpty()) {
-                System.out.println("No valid moves.");
-                return;
-            }
+            BoardUI.drawBoardWithHighlights(
+                    game.getBoard(),
+                    currentColor,
+                    position,
+                    moves
+            );
 
-            System.out.println("Valid moves");
-            for (ChessMove move : moves) {
-                System.out.println(move);
-            }
         } catch (Exception e) {
             System.out.println("Invalid position.");
         }
