@@ -83,7 +83,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             ServerMessage load =
                     new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-            load.game = game;
+            load.game = game.game();
 
             session.getRemote().sendString(gson.toJson(load));
 

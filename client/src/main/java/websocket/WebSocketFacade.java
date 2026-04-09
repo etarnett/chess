@@ -9,7 +9,8 @@ import jakarta.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 
-public class WebSocketFacade extends Endpoint {
+@ClientEndpoint
+public class WebSocketFacade {
 
     private Session session;
     private final ServerMessageHandler messageHandler;
@@ -24,14 +25,29 @@ public class WebSocketFacade extends Endpoint {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         this.session = container.connectToServer(this, socketURI);
 
-        this.session.addMessageHandler((MessageHandler.Whole<String>) message -> {
-            ServerMessage msg = gson.fromJson(message, ServerMessage.class);
-            messageHandler.handle(msg);
-        });
     }
 
-    @Override
-    public void onOpen(Session session, EndpointConfig config) {}
+    @OnOpen
+    public void onOpen(Session session, EndpointConfig config) {
+        this.session = session;
+    }
+
+    @OnMessage
+    public void onMessage(String message) {
+        System.out.println("RAW MESSAGE: " + message);
+        ServerMessage msg = gson.fromJson(message, ServerMessage.class);
+        messageHandler.handle(msg);
+    }
+
+    @OnError
+    public void onError(Session session, Throwable throwable) {
+        System.out.println("WebSocket error: " + throwable.getMessage());
+    }
+
+    @OnClose
+    public void onClose(Session session, CloseReason reason) {
+        System.out.println("WebSocket closed: " + reason);
+    }
 
 
     public void connect(String authToken, int gameID) throws IOException {

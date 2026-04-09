@@ -99,12 +99,19 @@ public class BoardUI {
         } else if (isValidMove) {
             bg = "\u001B[42m"; // green
         } else {
-            bg = (row + col) % 2 == 0 ? "\u001B[47m" : "\u001B[40m";
+            bg = (row + col) % 2 == 0 ? LIGHT_BG : DARK_BG;
         }
 
-        String pieceStr = piece == null ? "   " : " " + piece.getPieceType().toString().charAt(0) + " ";
+        String fg = "";
+        if (piece != null) {
+            fg = piece.getTeamColor() == ChessGame.TeamColor.WHITE
+                    ? WHITE_PIECE
+                    : BLACK_PIECE;
+        }
 
-        return bg + pieceStr + "\u001b[0m";
+        String symbol = getPieceSymbol(piece);
+
+        return bg + fg + " " + symbol + " " + RESET;
     }
 
     private static String getPieceSymbol(ChessPiece piece) {
