@@ -1,17 +1,29 @@
 package websocket;
 
 import chess.ChessGame;
+import model.GameData;
 import ui.BoardUI;
 import websocket.messages.ServerMessage;
 
 public class ClientMessageHandler implements ServerMessageHandler {
+    private String perspective = "WHITE";
+    private final String username;
+
+    public ClientMessageHandler(String username) {
+        this.username = username;
+    }
+
     @Override
     public void handle(ServerMessage message) {
+
         switch (message.getServerMessageType()) {
             case LOAD_GAME -> {
                 ChessGame game = (ChessGame) message.game;
+
+                setPerspective(message.game);
+
                 System.out.println("\n --- Game Update ---");
-                BoardUI.drawBoard(game.getBoard(), "WHITE");
+                BoardUI.drawBoard(game.getBoard(), perspective);
             }
 
             case NOTIFICATION -> {
@@ -21,6 +33,23 @@ public class ClientMessageHandler implements ServerMessageHandler {
             case ERROR -> {
                 System.out.println("\n[ERROR] " + message.errorMessage);
             }
+        }
+    }
+
+    private void setPerspective(Object gameObj) {
+        try {
+            GameData gameData = (GameData) gameObj;
+
+            if (username.equals(gameData.whiteUsername())) {
+                perspective = "WHITE";
+            } else if (username.equals(gameData.blackUsername())) {
+                perspective = "BLACK";
+            } else {
+                perspective = "WHITE"; // observer default
+            }
+
+        } catch (Exception e) {
+            perspective = "WHITE"; // fallback safety
         }
     }
 }
