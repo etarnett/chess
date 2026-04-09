@@ -54,4 +54,14 @@ public class WebSocketFacade extends Endpoint {
 
         session.getBasicRemote().sendText(gson.toJson(command));
     }
+
+    public void leave(String authToken, int gameID) throws IOException {
+        var command = new UserGameCommand(
+                UserGameCommand.CommandType.LEAVE,
+                authToken,
+                gameID
+        );
+
+        session.getBasicRemote().sendText(gson.toJson(command));
+    }
 }
