@@ -250,6 +250,7 @@ public class PostloginUI {
     private void printGameHelp() {
         System.out.println("""
             move <from> <to>  - make a move (e.g. move e2 e4)
+            
             leave             - leave the game
             resign            - resign the game
             highlight         - highlights possible moves

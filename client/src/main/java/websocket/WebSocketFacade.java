@@ -43,10 +43,6 @@ public class WebSocketFacade {
         System.out.println("WebSocket error: " + throwable.getMessage());
     }
 
-    @OnClose
-    public void onClose(Session session, CloseReason reason) {
-        System.out.println("WebSocket closed: " + reason);
-    }
 
 
     public void connect(String authToken, int gameID) throws IOException {

@@ -89,8 +89,17 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             session.getRemote().sendString(gson.toJson(load));
 
+            String color;
+            if (username.equals(game.whiteUsername())) {
+                color = "white";
+            } else if (username.equals(game.blackUsername())) {
+                color = "black";
+            } else {
+                color = "observer";
+            }
+
             ServerMessage notif = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-            notif.message = username + " joined the game";
+            notif.message = username + " joined the game as " + color;
 
             connections.broadcast(gameID, username, gson.toJson(notif));
         } catch (Exception e) {
@@ -206,20 +215,27 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             //normal move notification to others
             ServerMessage notif = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-            notif.message = username + " made a move";
+            notif.message = username + " made a move" + command.getMove().toString();
 
             connections.broadcast(gameID, username, gson.toJson(notif));
 
             //check/ checkmate notification to everyone
             var currentGame = updatedGame.game();
 
+            String affectedPlayer =
+                    (currentGame.getTeamTurn() == chess.ChessGame.TeamColor.WHITE)
+                            ? gameData.whiteUsername()
+                            : gameData.blackUsername();
+
             if (currentGame.isInCheckmate(currentGame.getTeamTurn())) {
-                ServerMessage checkmateMsg = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-                checkmateMsg.message = "checkmate";
+                ServerMessage checkmateMsg =
+                        new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+                checkmateMsg.message = affectedPlayer + " is in checkmate";
                 connections.broadcastAll(gameID, gson.toJson(checkmateMsg));
             } else if (currentGame.isInCheck(currentGame.getTeamTurn())) {
-                ServerMessage checkMsg = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-                checkMsg.message = "check";
+                ServerMessage checkMsg =
+                        new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+                checkMsg.message = affectedPlayer + "is in check";
                 connections.broadcastAll(gameID, gson.toJson(checkMsg));
             }
 
@@ -232,7 +248,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         try {
             AuthData auth = authDAO.getAuth(command.getAuthToken());
             if (auth == null) {
-                sendError(session, "error: unauthorized");
+                sendError(session, "unauthorized");
                 return;
             }
 
@@ -241,7 +257,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             GameData gameData = gameDAO.getGame(gameID);
             if (gameData == null) {
-                sendError(session, "error: game not found");
+                sendError(session,  "game not found");
                 return;
             }
 
@@ -249,14 +265,14 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             boolean isBlack = username.equals(gameData.blackUsername());
 
             if (!isWhite && !isBlack) {
-                sendError(session, "error: observer cannot resign");
+                sendError(session, "observer cannot resign");
                 return;
             }
 
             var game = gameData.game();
 
             if (game.isGameOver()) {
-                sendError(session, "error: game already over");
+                sendError(session, "game already over");
                 return;
             }
 
