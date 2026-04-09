@@ -96,6 +96,59 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
     }
 
+    private void leave(UserGameCommand command, Session session) throws IOException {
+        try {
+            AuthData auth = authDAO.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(session, "error: unauthorized");
+                return;
+            }
+
+            String username = auth.username();
+            int gameID = command.getGameID();
+
+            GameData gameData = gameDAO.getGame(gameID);
+            if (gameData == null) {
+                sendError(session, "error: game not found");
+                return;
+            }
+
+            String white = gameData.whiteUsername();
+            String black = gameData.blackUsername();
+
+            GameData updatedGame = gameData;
+
+            if (username.equals(white)) {
+                updatedGame = new GameData(
+                        gameData.gameID(),
+                        null,
+                        gameData.blackUsername(),
+                        gameData.gameName(),
+                        gameData.game()
+                );
+            } if (username.equals(black)) {
+                updatedGame = new GameData(
+                        gameData.gameID(),
+                        gameData.whiteUsername(),
+                        null,
+                        gameData.gameName(),
+                        gameData.game()
+                );
+            }
+
+            gameDAO.updateGame(updatedGame);
+
+            connections.remove(gameID, username);
+
+            ServerMessage notif = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            notif.message = username + " left the game";
+
+            connections.broadcast(gameID, username, gson.toJson(notif));
+        } catch (Exception e) {
+            sendError(session, "error: " + e.getMessage());
+        }
+    }
+
     private void makeMove(UserGameCommand command, Session session) throws IOException {
         try {
             AuthData auth = authDAO.getAuth(command.getAuthToken());
