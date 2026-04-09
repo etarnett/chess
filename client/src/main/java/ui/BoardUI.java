@@ -72,6 +72,13 @@ public class BoardUI {
 
             System.out.println();
         }
+
+        System.out.print("  ");
+        for (int col = colStart; col != colEnd; col += colStep) {
+            char letter = (char) ('a' + col - 1);
+            System.out.print(" " + letter + " ");
+        }
+        System.out.println();
     }
 
     private static String getSquare(ChessPiece piece, int row, int col) {

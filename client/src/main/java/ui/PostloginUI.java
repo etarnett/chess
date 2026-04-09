@@ -166,7 +166,6 @@ public class PostloginUI {
 
     private void gameLoop() {
         while (true) {
-            System.out.print("\n[game] > ");
             String input = scanner.nextLine();
 
             try {

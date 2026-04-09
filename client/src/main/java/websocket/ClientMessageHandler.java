@@ -19,7 +19,6 @@ public class ClientMessageHandler implements ServerMessageHandler {
 
     @Override
     public void handle(ServerMessage message) {
-        System.out.println("RECEIVED: " + message.getServerMessageType());
         switch (message.getServerMessageType()) {
             case LOAD_GAME -> {
                 currentGame = new Gson().fromJson(
@@ -39,6 +38,7 @@ public class ClientMessageHandler implements ServerMessageHandler {
                 System.out.println("\n[ERROR] " + message.errorMessage);
             }
         }
+        System.out.print("\n[game] > ");
     }
 
     public ChessGame getGame() {

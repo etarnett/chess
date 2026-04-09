@@ -180,7 +180,12 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 return;
             }
 
-            game.makeMove(command.getMove());
+            try {
+                game.makeMove(command.getMove());
+            } catch (Exception e) {
+                sendError(session, "error: " + e.getMessage());
+                return; // 🔥 VERY IMPORTANT: stop execution
+            }
 
             GameData updatedGame = new GameData(
                     gameData.gameID(),

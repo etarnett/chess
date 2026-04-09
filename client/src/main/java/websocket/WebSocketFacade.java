@@ -34,7 +34,6 @@ public class WebSocketFacade {
 
     @OnMessage
     public void onMessage(String message) {
-        System.out.println("RAW MESSAGE: " + message);
         ServerMessage msg = gson.fromJson(message, ServerMessage.class);
         messageHandler.handle(msg);
     }
