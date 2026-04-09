@@ -13,6 +13,7 @@ public class WebSocketFacade extends Endpoint {
 
     private Session session;
     private final ServerMessageHandler messageHandler;
+    private final Gson gson = new Gson();
 
     public WebSocketFacade(String url, ServerMessageHandler handler) throws Exception {
         url = url.replace("http", "ws");
@@ -24,7 +25,7 @@ public class WebSocketFacade extends Endpoint {
         this.session = container.connectToServer(this, socketURI);
 
         this.session.addMessageHandler((MessageHandler.Whole<String>) message -> {
-            ServerMessage msg = new Gson().fromJson(message, ServerMessage.class);
+            ServerMessage msg = gson.fromJson(message, ServerMessage.class);
             messageHandler.handle(msg);
         });
     }
@@ -42,5 +43,15 @@ public class WebSocketFacade extends Endpoint {
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
-    //  add MAKE_MOVE, LEAVE, RESIGN later
+    public void makeMove (String authToken, int gameID, chess.ChessMove move) throws IOException {
+        var command = new UserGameCommand(
+                UserGameCommand.CommandType.MAKE_MOVE,
+                authToken,
+                gameID
+        );
+
+        command.setMove(move);
+
+        session.getBasicRemote().sendText(gson.toJson(command));
+    }
 }

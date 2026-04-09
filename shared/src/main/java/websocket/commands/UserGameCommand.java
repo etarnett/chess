@@ -48,6 +48,10 @@ public class UserGameCommand {
         return move;
     }
 
+    public void setMove(ChessMove move) {
+        this.move = move;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
