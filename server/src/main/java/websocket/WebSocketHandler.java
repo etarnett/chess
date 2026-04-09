@@ -47,8 +47,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             switch (command.getCommandType()) {
                 case CONNECT -> connect(command, session);
-                /*
-                case LEAVE -> leave(command, session);*/
+                case LEAVE -> leave(command, session);
                 case MAKE_MOVE -> makeMove(command, session);
                 /*case RESIGN -> resign(command, session);*/
             }
@@ -146,7 +145,18 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             connections.broadcast(gameID, username, gson.toJson(notif));
 
+            //check/ checkmate notification to everyone
+            var currentGame = updatedGame.game();
 
+            if (currentGame.isInCheckmate(currentGame.getTeamTurn())) {
+                ServerMessage checkmateMsg = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+                checkmateMsg.message = "checkmate";
+                connections.broadcastAll(gameID, gson.toJson(checkmateMsg));
+            } else if (currentGame.isInCheck(currentGame.getTeamTurn())) {
+                ServerMessage checkMsg = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+                checkMsg.message = "check";
+                connections.broadcastAll(gameID, gson.toJson(checkMsg));
+            }
 
         } catch (Exception e) {
             sendError(session, "error: " + e.getMessage());
