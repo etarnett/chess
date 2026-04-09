@@ -52,6 +52,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 case LEAVE -> leave(command, session);
                 case MAKE_MOVE -> makeMove(command, session);
                 case RESIGN -> resign(command, session);
+                case REDRAW -> redraw(command, session);
             }
 
         } catch (Exception e) {
@@ -292,6 +293,29 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             notif.message = username + " resigned the game";
 
             connections.broadcastAll(gameID, gson.toJson(notif));
+        } catch (Exception e) {
+            sendError(session, "error: " + e.getMessage());
+        }
+    }
+
+    private void redraw(UserGameCommand command, Session session) throws IOException {
+        try {
+            AuthData auth = authDAO.getAuth(command.getAuthToken());
+            if (auth == null) {
+                sendError(session, "error: unauthorized");
+                return;
+            }
+            int gameID = command.getGameID();
+            GameData gameData = gameDAO.getGame(gameID);
+            if (gameData == null) {
+                sendError(session, "error: game not found");
+                return;
+            }
+            ServerMessage load =
+                    new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+            load.game = gameData.game();
+            session.getRemote().sendString(gson.toJson(load));
+
         } catch (Exception e) {
             sendError(session, "error: " + e.getMessage());
         }

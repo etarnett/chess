@@ -11,6 +11,8 @@ public class BoardUI {
     private static final String DARK_BG = "\u001B[40m";
     private static final String WHITE_PIECE = "\u001B[31m";
     private static final String BLACK_PIECE = "\u001B[34m";
+    private static final String LIGHT_GREEN_BG = "\u001B[102m";
+    private static final String DARK_GREEN_BG = "\u001B[42m";
 
     public static void drawBoard(ChessBoard board, String perspective) {
         boolean isWhite = perspective == null || perspective.equalsIgnoreCase("WHITE");
@@ -98,13 +100,19 @@ public class BoardUI {
         return bg + fg + " " + symbol + " " + RESET;
     }
 
-    private static String getHighlightedSquare(ChessPiece piece, int row, int col, boolean isSelected, boolean isValidMove) {
+    private static String getHighlightedSquare(
+            ChessPiece piece,
+            int row, int col,
+            boolean isSelected,
+            boolean isValidMove) {
+        boolean isLight = (row + col) % 2 != 0;
+
         String bg;
 
         if (isSelected) {
             bg = "\u001B[44m"; // blue
         } else if (isValidMove) {
-            bg = "\u001B[42m"; // green
+            bg = isLight ? LIGHT_GREEN_BG : DARK_GREEN_BG;
         } else {
             bg = (row + col) % 2 == 0 ? LIGHT_BG : DARK_BG;
         }
