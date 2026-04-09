@@ -21,7 +21,7 @@ public class PostloginUI {
 
     private final Map<Integer, Integer> gameMap = new HashMap<>();
 
-    public PostloginUI(ServerFacade server, Scanner scanner, String authToken) {
+    public PostloginUI(ServerFacade server, Scanner scanner, String authToken, String username) {
         this.server = server;
         this.scanner = scanner;
         this.authToken = authToken;
@@ -227,6 +227,10 @@ public class PostloginUI {
 
             ChessPosition position = parsePosition(parts[1]);
             ChessGame game = getCurrentGame();
+            if (game == null) {
+                System.out.println("Game not loaded yet.");
+                return;
+            }
 
             Collection<ChessMove> moves = game.validMoves(position);
 

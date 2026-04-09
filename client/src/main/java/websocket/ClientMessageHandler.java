@@ -1,6 +1,7 @@
 package websocket;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 import ui.BoardUI;
 import websocket.messages.ServerMessage;
@@ -16,10 +17,13 @@ public class ClientMessageHandler implements ServerMessageHandler {
 
     @Override
     public void handle(ServerMessage message) {
-
+        System.out.println("RECEIVED: " + message.getServerMessageType());
         switch (message.getServerMessageType()) {
             case LOAD_GAME -> {
-                currentGame = (ChessGame) message.game;
+                currentGame = new Gson().fromJson(
+                        new Gson().toJson(message.game),
+                        ChessGame.class
+                );
 
                 setPerspective(message.game);
 

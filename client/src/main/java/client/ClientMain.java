@@ -38,7 +38,7 @@ public class ClientMain {
             if (authData == null) {
                 authData = preloginUI.runCommand(input);
                 if (authData != null) {
-                    postloginUI = new ui.PostloginUI(server, scanner, authData.authToken());
+                    postloginUI = new ui.PostloginUI(server, scanner, authData.authToken(), authData.username());
                 }
             } else {
                 boolean loggedOut = postloginUI.runCommand(input);
