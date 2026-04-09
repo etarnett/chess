@@ -42,5 +42,5 @@ public class WebSocketFacade extends Endpoint {
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
-    // (you’ll add MAKE_MOVE, LEAVE, RESIGN later)
+    //  add MAKE_MOVE, LEAVE, RESIGN later
 }

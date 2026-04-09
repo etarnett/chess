@@ -1,92 +1,109 @@
 package websocket;
 
 import com.google.gson.Gson;
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.*;
+import io.javalin.websocket.*;
 
-import dataaccess.*;
-import model.*;
+import org.eclipse.jetty.websocket.api.Session;
+
+import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
+import model.AuthData;
+import model.GameData;
+
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
+import java.io.IOException;
 
-@WebSocket
-public class WebSocketHandler {
+public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
+
     private final Gson gson = new Gson();
 
-    public String handleMessage(String message) {
+    // shared connection manager
+    private final ConnectionManager connections = new ConnectionManager();
+
+    private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
+
+    public WebSocketHandler(AuthDAO authDAO, GameDAO gameDAO) {
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
+    }
+
+    @Override
+    public void handleConnect(WsConnectContext ctx) {
+        System.out.println("WebSocket connected");
+        ctx.enableAutomaticPings();
+    }
+
+    @Override
+
+    public void handleMessage(WsMessageContext ctx) {
         try {
-            UserGameCommand command = gson.fromJson(message, UserGameCommand.class);
-            return switch (command.getCommandType()) {
-                case CONNECT -> handleConnect(command);
-                case MAKE_MOVE -> handleMove(command);
-                case LEAVE -> handleLeave(command);
-                case RESIGN -> handleResign(command);
-            };
+            UserGameCommand command =
+                    gson.fromJson(ctx.message(), UserGameCommand.class);
+
+            Session session = ctx.session;
+
+            switch (command.getCommandType()) {
+                case CONNECT -> connect(command, session);
+                /*
+                case LEAVE -> leave(command, session);
+                case MAKE_MOVE -> makeMove(command, session);
+                case RESIGN -> resign(command, session);*/
+            }
+
         } catch (Exception e) {
-            return error("error: bad request");
+            sendError(ctx.session, "error: bad request");
         }
     }
 
-    private String handleConnect(UserGameCommand command) {
+    @Override
+    public void handleClose(WsCloseContext ctx) {
+        System.out.println("WebSocket closed");
+    }
+
+    private void connect(UserGameCommand command, Session session) throws IOException {
         try {
-            AuthData auth = AuthDAO.getAuth(command.getAuthToken());
+            AuthData auth = authDAO.getAuth(command.getAuthToken());
             if (auth == null) {
-                return error("error: unauthorized");
+                sendError(session, "error: unauthorized");
+                return;
             }
 
             String username = auth.username();
-            GameData game = gameService.getGame(command.getGameID());
+            int gameID = command.getGameID();
 
+            GameData game = gameDAO.getGame(gameID);
             if (game == null) {
-                return error("error: game not found");
+                sendError(session, "error: game not found");
+                return;
             }
 
-            ConnectionManager.add(command.getGameID(), username, this.session);
+            connections.add(gameID, username, session);
 
-            ServerMessage loadMsg = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-            loadMsg.game = game;
-            session.getRemote().sendString(gson.toJson(loadMsg));
+            ServerMessage load =
+                    new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+            load.game = game;
 
-            String role = getRole(username, game);
+            session.getRemote().sendString(gson.toJson(load));
 
-            ServerMessage notification =
-                    new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            ServerMessage notif = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            notif.message = username + " joined the game";
 
-            notification.message = username + " joined as " + role;
-
-            connectionManager.broadcastExcept(
-                    command.getGameID(),
-                    username,
-                    gson.toJson(notification)
-            );
-
-            return null;
+            connections.broadcast(gameID, username, gson.toJson(notif));
         } catch (Exception e) {
-            return error("error: " + e.getMessage());
+            sendError(session, "error: " + e.getMessage());
         }
-
-        ServerMessage msg =
-                new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-        return gson.toJson(msg);
     }
 
-    private String handleMove(UserGameCommand command) {
-        return error("error: not implemented");
-    }
+    private void sendError(Session session, String message) {
+        try {
+            ServerMessage msg = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+            msg.errorMessage = message;
 
-    private String handleLeave(UserGameCommand command) {
-        return null;
-    }
-
-    private String handleResign(UserGameCommand command) {
-        return error("error: not implemented");
-    }
-
-    private String error(String message) {
-        ServerMessage msg =
-                new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-        msg.errorMessage = message;
-        return gson.toJson(msg);
+            session.getRemote().sendString(gson.toJson(msg));
+        } catch (Exception ignored) {
+        }
     }
 }

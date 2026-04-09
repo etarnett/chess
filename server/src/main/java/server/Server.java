@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import websocket.WebSocketHandler;
 import dataaccess.*;
 import service.*;
 import io.javalin.Javalin;
@@ -60,6 +61,14 @@ public class Server {
         javalin.post("/game", createGameHandler::createGame);
         javalin.get("/game", listGameHandler::listGames);
         javalin.put("/game", joinGameHandler::joinGame);
+
+        WebSocketHandler wsHandler = new WebSocketHandler(authDAO, gameDAO);
+
+        javalin.ws("/ws", ws -> {
+            ws.onConnect(wsHandler);
+            ws.onMessage(wsHandler);
+            ws.onClose(wsHandler);
+        });
 
     }
 
