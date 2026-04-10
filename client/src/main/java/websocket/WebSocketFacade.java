@@ -34,13 +34,6 @@ public class WebSocketFacade {
         messageHandler.handle(msg);
     }
 
-    @SuppressWarnings("unused")
-    @OnError
-    public void onError(Session session, Throwable throwable) {
-        System.out.println("WebSocket error: " + throwable.getMessage());
-    }
-
-
 
     public void connect(String authToken, int gameID) throws IOException {
         var command = new UserGameCommand(
