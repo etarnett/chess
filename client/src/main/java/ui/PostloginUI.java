@@ -175,8 +175,15 @@ public class PostloginUI {
                     System.out.println("Left game.");
                     break;
                 } else if (input.equalsIgnoreCase("resign")) {
-                    ws.resign(authToken, currentGameID);
-                    System.out.println("You resigned.");
+                    System.out.print("Are you sure you want to resign? (yes/no): ");
+                    String confirm = scanner.nextLine().trim().toLowerCase();
+
+                    if (confirm.equals("yes") || confirm.equals("y")) {
+                        ws.resign(authToken, currentGameID);
+                        System.out.println("You resigned.");
+                    } else {
+                        System.out.println("Resignation cancelled.");
+                    }
                 } else if (input.startsWith("move")) {
                     handleMove(input);
                 } else if (input.equalsIgnoreCase("help")) {
