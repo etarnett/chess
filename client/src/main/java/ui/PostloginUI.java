@@ -198,8 +198,8 @@ public class PostloginUI {
     private void handleMove(String input) throws Exception {
         // format: move e2 e4
         String[] parts = input.split(" ");
-        if (parts.length < 3) {
-            System.out.println("Usage: move <from> <to>");
+        if (parts.length < 3 || parts.length > 4) {
+            System.out.println("Usage: move <from> <to> [promotion]");
             return;
         }
 
@@ -207,10 +207,43 @@ public class PostloginUI {
             ChessPosition from = parsePosition(parts[1]);
             ChessPosition to = parsePosition(parts[2]);
 
-            ChessMove move = new ChessMove(from, to, null);
+            ChessGame game = getCurrentGame();
+            if (game == null) {
+                System.out.println("Game not loaded yet.");
+                return;
+            }
+
+            ChessPiece piece = game.getBoard().getPiece(from);
+            if (piece == null) {
+                System.out.println("No piece at starting position.");
+                return;
+            }
+
+            ChessPiece.PieceType promotion = null;
+
+            boolean isPawn = piece.getPieceType() == ChessPiece.PieceType.PAWN;
+            boolean reachesEnd =
+                    (piece.getTeamColor() == ChessGame.TeamColor.WHITE && to.getRow() == 8) ||
+                            (piece.getTeamColor() == ChessGame.TeamColor.BLACK && to.getRow() == 1);
+
+            if (parts.length >= 4) {
+                if (!isPawn || !reachesEnd) {
+                    System.out.println("Promotion only allowed for pawns reaching last rank.");
+                    return;
+                }
+                promotion = parsePromotion(parts[3]);
+            } else {
+                // Optional: enforce promotion if required
+                if (isPawn && reachesEnd) {
+                    System.out.println("You must specify a promotion piece (queen, rook, bishop, knight).");
+                    return;
+                }
+            }
+
+            ChessMove move = new ChessMove(from, to, promotion);
             ws.makeMove(authToken, currentGameID, move);
         } catch (Exception e) {
-            System.out.println("Invalid move format. Use something like: e2 e4");
+            System.out.println("Invalid move format. Use something like: move e2 e4 queen");
         }
     }
 
@@ -233,6 +266,16 @@ public class PostloginUI {
         int col = file - 'a' + 1;
         int row = rank - '0';
         return new ChessPosition(row, col);
+    }
+
+    private ChessPiece.PieceType parsePromotion(String input) {
+        return switch (input.toLowerCase()) {
+            case "queen" -> ChessPiece.PieceType.QUEEN;
+            case "rook" -> ChessPiece.PieceType.ROOK;
+            case "bishop" -> ChessPiece.PieceType.BISHOP;
+            case "knight" -> ChessPiece.PieceType.KNIGHT;
+            default -> throw new IllegalArgumentException("Invalid promotion piece");
+        };
     }
 
     private void highlightMoves(String input) {
