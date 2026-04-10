@@ -27,17 +27,14 @@ public class WebSocketFacade {
 
     }
 
-    @OnOpen
-    public void onOpen(Session session, EndpointConfig config) {
-        this.session = session;
-    }
-
+    @SuppressWarnings("unused")
     @OnMessage
     public void onMessage(String message) {
         ServerMessage msg = gson.fromJson(message, ServerMessage.class);
         messageHandler.handle(msg);
     }
 
+    @SuppressWarnings("unused")
     @OnError
     public void onError(Session session, Throwable throwable) {
         System.out.println("WebSocket error: " + throwable.getMessage());
@@ -79,6 +76,16 @@ public class WebSocketFacade {
     public void resign(String authToken, int gameID) throws IOException {
         var command = new UserGameCommand(
                 UserGameCommand.CommandType.RESIGN,
+                authToken,
+                gameID
+        );
+
+        session.getBasicRemote().sendText(gson.toJson(command));
+    }
+
+    public void redraw(String authToken, int gameID) throws IOException {
+        var command = new UserGameCommand(
+                UserGameCommand.CommandType.REDRAW,
                 authToken,
                 gameID
         );

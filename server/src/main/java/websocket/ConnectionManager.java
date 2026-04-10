@@ -23,7 +23,9 @@ public class ConnectionManager {
     }
 
     public void broadcast(int gameID, String excludeUser, String message) throws IOException {
-        if (!connections.containsKey(gameID)) return;
+        if (!connections.containsKey(gameID)) {
+            return;
+        }
 
         for (var entry : connections.get(gameID).entrySet()) {
             Session s = entry.getValue();
@@ -34,10 +36,12 @@ public class ConnectionManager {
     }
 
     public void broadcastAll(int gameID, String message) throws IOException {
-        if (!connections.containsKey(gameID)) return;
+        if (!connections.containsKey(gameID)) {
+            return;
+        }
 
         for (Session s : connections.get(gameID).values()) {
-            if (s.isOpen()) {
+            if (s.isOpen()){
                 s.getRemote().sendString(message);
             }
         }

@@ -105,7 +105,7 @@ public class BoardUI {
             int row, int col,
             boolean isSelected,
             boolean isValidMove) {
-        boolean isLight = (row + col) % 2 != 0;
+        boolean isLight = (row + col) % 2 == 0;
 
         String bg;
 

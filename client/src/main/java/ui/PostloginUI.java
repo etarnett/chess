@@ -183,6 +183,8 @@ public class PostloginUI {
                     printGameHelp();
                 } else if (input.startsWith("highlight")) {
                     highlightMoves(input);
+                } else if (input.equalsIgnoreCase("redraw")) {
+                    ws.redraw(authToken, currentGameID);
                 }
                 else {
                     System.out.println("Unknown command");
@@ -250,10 +252,10 @@ public class PostloginUI {
     private void printGameHelp() {
         System.out.println("""
             move <from> <to>  - make a move (e.g. move e2 e4)
-            
             leave             - leave the game
             resign            - resign the game
             highlight         - highlights possible moves
+            redraw            - reload board from server
             help              - show commands
             """);
     }
