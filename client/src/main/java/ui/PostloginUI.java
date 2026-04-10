@@ -203,16 +203,35 @@ public class PostloginUI {
             return;
         }
 
-        ChessPosition from = parsePosition(parts[1]);
-        ChessPosition to = parsePosition(parts[2]);
+        try {
+            ChessPosition from = parsePosition(parts[1]);
+            ChessPosition to = parsePosition(parts[2]);
 
-        ChessMove move = new ChessMove(from, to, null);
-        ws.makeMove(authToken, currentGameID, move);
+            ChessMove move = new ChessMove(from, to, null);
+            ws.makeMove(authToken, currentGameID, move);
+        } catch (Exception e) {
+            System.out.println("Invalid move format. Use something like: e2 e4");
+        }
     }
 
     private ChessPosition parsePosition(String pos) {
-        int col = pos.charAt(0) - 'a' + 1;
-        int row = Character.getNumericValue(pos.charAt(1));
+        if (pos == null || pos.length() != 2) {
+            throw new IllegalArgumentException("Invalid position");
+        }
+
+        char file = pos.charAt(0);
+        char rank = pos.charAt(1);
+
+        if (file < 'a' || file > 'h') {
+            throw new IllegalArgumentException("Column must be a-h");
+        }
+
+        if (rank < '1' || rank > '8') {
+            throw new IllegalArgumentException("Row must be 1-8");
+        }
+
+        int col = file - 'a' + 1;
+        int row = rank - '0';
         return new ChessPosition(row, col);
     }
 
